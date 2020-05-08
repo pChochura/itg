@@ -20,11 +20,16 @@ const printError = (text) => {
 };
 
 const getUser = () => {
-  return JSON.parse(sh.exec('hub api user | grep -F ""', { silent: true })).login;
-}
+  return JSON.parse(sh.exec('hub api user | grep -F ""', { silent: true }))
+    .login;
+};
 
 String.prototype.trimIndent = function () {
   return this.replace(/\n */g, '\n');
+};
+
+String.prototype.trimEndline = function () {
+  return this.replace(/\n/, '');
 };
 
 module.exports = {

@@ -105,7 +105,9 @@ const validateOptions = (tempOptions) => {
   // Validate 'from'
   if (tempOptions.hasOwnProperty('from')) {
     if (!tempOptions.from) {
-      sh.echo('You have to pass an issue number or "master" to "--from" option');
+      sh.echo(
+        'You have to pass an issue number or "master" to "--from" option',
+      );
       sh.exit(1);
     }
 
@@ -129,7 +131,8 @@ const validateCustom = (custom) => {
   }
 
   if (['bug', 'feature'].indexOf(custom) !== -1) {
-    sh.echo(`Warning!
+    sh.echo(
+      `Warning!
       Passing "bug" or "feature" to the "custom" option slows down the process. 
       Try using "bug" option and keep in mind - "feature" label is the default.
     `.trimIndent(),
@@ -197,7 +200,7 @@ const getBranchNameFromNumber = (issueNumber) => {
 
 const getBranchName = (issueTitle, issueNumber) => {
   return `${utils.slugify(issueTitle)}-i${issueNumber}`;
-}
+};
 
 const runCommands = (options) => {
   if (options.open) {
@@ -209,16 +212,19 @@ const runCommands = (options) => {
     `Creating issue with name: ${options.title}, labeled: ${options.label}`,
   );
 
-  const assignee = '';
+  let assignee = '';
   if (!options.detached) {
     sh.echo('Assigning this issue to you');
 
     assignee = `-a ${utils.getUser()}`;
   }
 
-  const issueLink = sh.exec(
-    `hub issue create -l '${options.label}' -m '${options.title}' ${assignee} | grep -F ""`,
-  );
+  const issueLink = sh
+    .exec(
+      `hub issue create -l '${options.label}' -m '${options.title}' ${assignee} | grep -F ""`,
+      { silent: true },
+    )
+    .stdout.trimEndline();
 
   if (!issueLink) {
     sh.echo('Something went wrong with creating issue');
@@ -234,17 +240,26 @@ const runCommands = (options) => {
   }
 
   // Creating a custom branch
+  sh.echo('Checking out your new branch');
   const branchName = getBranchName(options.title, issueNumber);
-  sh.exec(`git push origin origin/${options.from}:refs/heads/${branchName}`, { silent: true });
+  sh.exec(`git push origin origin/${options.from}:refs/heads/${branchName}`, {
+    silent: true,
+  });
 
   if (!options.detached) {
-    sh.exec(`git checkout ${branchName}`);
+    sh.exec('git stash', { silent: true });
+    sh.exec(`git checkout ${branchName}`, { silent: true });
+    sh.exec('git stash pop', { silent: true });
   }
 
   // Adding description to the issue
-  const branchLink = sh.exec('hub browse -u | grep -F ""').replace(/[a-z0-9-]+$/, branchName);
+  const branchLink = sh
+    .exec('hub browse -u | grep -F ""')
+    .replace(/[a-z0-9-]+$/, branchName);
   const description = `Associated branch: [${branchName}](${branchLink})`;
-  sh.exec(`hub issue update "${issueNumber}" -m "${options.title}" -m "${description}"`);
+  sh.exec(
+    `hub issue update "${issueNumber}" -m "${options.title}" -m "${description}"`,
+  );
 
   sh.exit(0);
 };
@@ -261,10 +276,12 @@ const runOpen = (open) => {
   }
 
   // Checkout the branch
-  sh.exec(`git checkout --track origin/${open.branch}`);
+  sh.exec(`git checkout --track origin/${open.branch}`, { silent: true });
 
   sh.echo('Assigning this issue to you');
-  sh.exec(`hub issue update ${open.number} -a ${utils.getUser()}`);
+  sh.exec(`hub issue update ${open.number} -a ${utils.getUser()}`, {
+    silent: true,
+  });
 
   sh.exit(0);
 };
@@ -272,6 +289,7 @@ const runOpen = (open) => {
 const issue = (args) => {
   const options = parseArgs(args);
   runCommands(options);
+  sh.echo(options);
 };
 
 module.exports = issue;
