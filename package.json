@@ -1,0 +1,28 @@
+{
+  "name": "itg",
+  "version": "0.0.1",
+  "description": "Issue Tracker for Github",
+  "main": "bin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pawelek99/Issue-Tracker-for-Github.git"
+  },
+  "keywords": [
+    "issue-tracker",
+    "github",
+    "issues",
+    "itg"
+  ],
+  "author": "Paweł Chochura",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pawelek99/Issue-Tracker-for-Github/issues"
+  },
+  "homepage": "https://github.com/Pawelek99/Issue-Tracker-for-Github#readme",
+  "dependencies": {
+    "shelljs": "^0.8.4"
+  }
+}
