@@ -4,6 +4,7 @@
   "description": "Issue Tracker for Github",
   "main": "bin.js",
   "scripts": {
+    "format": "prettier --single-quote --trailing-comma all --write .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,6 +24,8 @@
   },
   "homepage": "https://github.com/Pawelek99/Issue-Tracker-for-Github#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "prettier": "^2.0.5",
     "shelljs": "^0.8.4"
   }
 }

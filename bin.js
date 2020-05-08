@@ -1,34 +1,39 @@
-const shell = require("shelljs");
+const sh = require('shelljs');
+const issue = require('./src/issue');
+const pr = require('./src/pr');
 
-if (!shell.which('git')) {
-    shell.echo("Nope. Install 'git' first: 'https://git-scm.com/book/en/v2/Getting-Started-Installing-Git'");
-    shell.exit(1);
+if (!sh.which('git')) {
+  sh.echo(
+    'Nope. Install "git" first: "https://git-scm.com/book/en/v2/Getting-Started-Installing-Git"',
+  );
+  sh.exit(1);
 }
 
-if (!shell.which('hub')) {
-    shell.echo("Nope. Install 'hub' first: 'https://github.com/github/hub'");
-    shell.exit(1);
-}
-
-const validateLabel = (label) => {
-    const labelsOutput = shell.exec("hub issue labels");
-    if (labelsOutput.code !== 0) {
-        shell.echo(`We have a problem with getting labels from your repo.`);
-        shell.exit(1);
-    }
-
-    shell.echo(labelsOutput.stdout);
+if (!sh.which('hub')) {
+  sh.echo('Nope. Install "hub" first: "https://github.com/github/hub"');
+  sh.exit(1);
 }
 
 const args = process.argv.slice(2);
 
-for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    if (['-h', '--help', '-help', 'h', 'help', '?'].indexOf(arg) !== -1) {
-        // showHelp();
-    } else if (['-b', '--bug'].indexOf(arg) !== -1) {
-        bug = true;
-    } else if (['-c', '--custom'].indexOf(arg) !== -1) {
-        validateLabel(args[i + 1])
-    }
+if (['issue', 'i'].indexOf(args[0]) !== -1) {
+  issue(args.slice(1));
+  sh.exit(0);
 }
+
+if (['pull-request', 'pr'].indexOf(args[0]) !== -1) {
+  pr(args.slice(1));
+  sh.exit(0);
+}
+
+// User must have typed something wrong
+sh.echo(`
+  We've got a problem...
+
+  The correct usage of this command is:
+    ${process.env.LIB_NAME} issue|i [OPTIONS]
+    ${process.env.LIB_NAME} pull-request|pr [OPTIONS]
+  
+  If you want help with OPTIONS, just type 'help' instead of OPTIONS.
+  Have fun!
+`);
