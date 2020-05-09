@@ -1,6 +1,6 @@
 {
   "name": "itg",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Issue Tracker for Github",
   "main": "bin.js",
   "scripts": {
