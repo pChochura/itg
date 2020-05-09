@@ -3,6 +3,7 @@
 <details open><summary>English version</summary>
 
 ---
+
 To install **itg** library just type:
 
 ```bash
@@ -95,6 +96,7 @@ Sample usages:
   itg pr|pull-request
   ```
   It will create a PR with the same labels as the issue associated with the current branch. Additionally the description will be populated with as follows:
+
   > Close #1
 
   It will make sure that after closing the PR, the associated issue will be closed as well (as in the example issue issue with id **#1**).
@@ -140,11 +142,12 @@ Sample usages:
   If the help option was provided (no matter on what position) the other options will be discarded and ignored.
 </details>
 
-### Dla tych, którym łatwiej po polsku :D 
+### Dla tych, którym łatwiej po polsku :D
 
 <details><summary>Wersja polska</summary>
 
 ---
+
 W celu zainstalowania **itg** należy użyć komendy:
 
 ```bash
@@ -237,7 +240,9 @@ Przykładowe użycia skryptu:
   itg pr|pull-request
   ```
   Zostanie utworzony PR, który będzie miał taką samą etykietę, jak zadanie, które jest wskazywane przez lokalną gałąź, na której obecnie trwają prace. Dodatkowo w opisie PR będzie się znajdował tekst:
+
   > Close #1
+
   Spowoduje to, że po zamknięciu Pull Requestu, zostanie również zamknięte zadanie wskazane przez wyżej podany numer (w przykładzie numer **#1**).
 - ```bash
   itg pr|pull-request -d
