@@ -2,13 +2,17 @@
 
 ---
 
-To install **itg** library just type:
+To install **itg** library just type in the console:
 
 ```bash
 npm install -g itg
 ```
 
 Keep in mind that this library will only be useful when installed globally.
+
+#### But what for?
+
+It's a collection of methods to help organize and navigate through more complex repositories. It's based on **git** and **hub**. **hub** provides us with methods to create issues or pull requests, but they are not standardized. And multiple styles of branch names, issues without labels or pull requests not closing corresponding issues are something you want to avoid while working with team.
 
 ---
 
@@ -145,13 +149,17 @@ Sample usages:
 
 ---
 
-W celu zainstalowania **itg** należy użyć komendy:
+W celu zainstalowania **itg** należy użyć komendy w konsoli:
 
 ```bash
 npm install -g itg
 ```
 
 Pamiętaj o tym, że ta biblioteka będzie użyteczna jedynie zainstalowana globalnie.
+
+#### Ale po co to?
+
+Jest to zbiór metod pozwalających zorganizować bardziej złożone repozytoria i nawigować w nich. Bilbioteka bazuje na **git** oraz na **hub**. **hub** udostępnia metoda, dzięki którym można tworzyć zadania lub pull requesty, natomiast nie są one ustandaryzowane. A wiele różnych styli naz gałęzi, zadania bez etykiet czy pull requesty nie zamykające tyczących się ich zadań to jest coś, co najlepiej unikać w pracy w zespole.
 
 ---
 
