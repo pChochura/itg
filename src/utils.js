@@ -22,7 +22,13 @@ const printError = (text) => {
 };
 
 const getUser = () => {
-  return JSON.parse(sh.exec('hub api user | grep -F ""')).login;
+  const user = sh.exec('hub api user | grep -F ""');
+  if (!user) {
+    sh.echo('We ecountered some problem with getting your username');
+    sh.exit(1);
+  }
+
+  return JSON.parse(user).login;
 };
 
 const getBranchNameFromNumber = (issueNumber) => {
@@ -70,7 +76,7 @@ String.prototype.trimIndent = function () {
 };
 
 String.prototype.trimEndline = function () {
-  return this.replace(/\n/, '');
+  return this.replace(/\n$/, '');
 };
 
 module.exports = {

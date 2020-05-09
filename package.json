@@ -6,12 +6,13 @@
   "bin": "./bin.js",
   "scripts": {
     "format": "prettier --write '**/*.js'",
-    "test": "echo \"Warning: no test specified\" && exit 0",
-    "prepublishOnly": "npm run format && npm run test"
+    "format:check": "prettier --check '**/*.js'",
+    "test": "jest",
+    "prepublishOnly": "npm run format:check && npm run test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pawelek99/Issue-Tracker-for-Github.git"
+    "url": "git+https://github.com/Pawelek99/itg.git"
   },
   "keywords": [
     "issue-tracker",
@@ -21,12 +22,10 @@
   ],
   "author": "Paweł Chochura",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Pawelek99/Issue-Tracker-for-Github/issues"
-  },
-  "homepage": "https://github.com/Pawelek99/Issue-Tracker-for-Github#readme",
+  "homepage": "https://github.com/Pawelek99/itg#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "jest": "^26.0.1",
     "shelljs": "^0.8.4"
   },
   "devDependencies": {
