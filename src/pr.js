@@ -1,4 +1,3 @@
-require('dotenv').config();
 const utils = require('./utils');
 const sh = require('shelljs');
 

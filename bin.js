@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-require('./src/utils');
+require('dotenv').config();
 const issue = require('./src/issue');
 const pr = require('./src/pr');
 const sh = require('shelljs');
 
 sh.config.silent = true;
+process.env.LIB_NAME = process.env.LIB_NAME || 'itg';
 
 if (!sh.which('git')) {
   sh.echo(
@@ -37,8 +38,8 @@ sh.echo(
   We've got a problem...
 
   The correct usage of this command is:
-    ${process.env.LIB_NAME} issue|i [OPTIONS]
-    ${process.env.LIB_NAME} pull-request|pr [OPTIONS]
+  \t${process.env.LIB_NAME} issue|i [OPTIONS]
+  \t${process.env.LIB_NAME} pull-request|pr [OPTIONS]
   
   If you want help with OPTIONS, just type 'help' instead of OPTIONS.
   Have fun!
