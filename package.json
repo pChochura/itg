@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier --write '**/*.js'",
     "test": "echo \"Warning: no test specified\" && exit 0",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run format && npm run test"
   },
   "repository": {
     "type": "git",

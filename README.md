@@ -1,7 +1,5 @@
 # Issue-Tracker-for-Github
 
-<details open><summary>English version</summary>
-
 ---
 
 To install **itg** library just type:
@@ -140,7 +138,6 @@ Sample usages:
   ```
   All of the above examples will produce help message similar to this one.
   If the help option was provided (no matter on what position) the other options will be discarded and ignored.
-</details>
 
 ### Dla tych, którym łatwiej po polsku :D
 
