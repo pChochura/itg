@@ -1,6 +1,9 @@
-const sh = require('shelljs');
+require('./src/utils');
 const issue = require('./src/issue');
 const pr = require('./src/pr');
+const sh = require('shelljs');
+
+sh.config.silent = true;
 
 if (!sh.which('git')) {
   sh.echo(
@@ -27,7 +30,8 @@ if (['pull-request', 'pr'].indexOf(args[0]) !== -1) {
 }
 
 // User must have typed something wrong
-sh.echo(`
+sh.echo(
+  `
   We've got a problem...
 
   The correct usage of this command is:
@@ -36,4 +40,5 @@ sh.echo(`
   
   If you want help with OPTIONS, just type 'help' instead of OPTIONS.
   Have fun!
-`);
+`.trimIndent(),
+);
