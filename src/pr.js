@@ -7,16 +7,17 @@ sh.config.silent = true;
 const showHelp = () => {
   sh.echo(
     `
-    Creates a pull request from the current branch to the master branch.
+    Creates a Pull Request from the current branch to the master branch.
     Use this script instead of creating PR through the browser
     because this way the PR will be marked with the correct label and appropriate issue will be linked.
 
-    Usage:  ${process.env.LIB_NAME} [-h] [-d] [-m] [--to <issue>]
+    Usage:  ${process.env.LIB_NAME} [-h] [-d] [-m] [-p] [--to <issue>]
           \t${process.env.LIB_NAME} open [<issue>]
     Options:
     \t-h, --help, -help, h, help, ?   - displays this help message
-    \t-d, --draft                     - marks newly created pull request as a draft
-    \t-m, --master                    - switches you to the master branch after creating a pull request
+    \t-d, --draft                     - marks newly created Pull Request as a draft
+    \t-m, --master                    - switches you to the master branch after creating a Pull Request
+    \t-p, --push                      - push changes before creating a Pull Request
     \t--to <issue number>             - allows to choose a branch to be merged to by selecting an issue
     \topen [<issue number>]           - opens a webiste with PR associated with the current (or selected) issue
     `.trimIndent(),
@@ -33,6 +34,8 @@ const parseArgs = (args) => {
       options.draft = true;
     } else if (['-m', '--master'].indexOf(args[i]) !== -1) {
       options.master = true;
+    } else if (['-p', '--push'].indexOf(args[i]) !== -1) {
+      options.push = true;
     } else if (['--to'].indexOf(args[i]) !== -1) {
       options.to = args[i + 1];
 
@@ -74,6 +77,11 @@ const validateOptions = (tempOptions) => {
   // Validate 'master'
   if (tempOptions.master) {
     options.master = true;
+  }
+
+  // Validate 'push'
+  if (tempOptions.push) {
+    options.push = true;
   }
 
   // Validate 'to'
@@ -148,6 +156,13 @@ const runCommands = (options) => {
     options.draft = '';
   }
 
+  if (options.push) {
+    sh.echo('Pushing changes before creating Pull Request');
+    options.push = '-p';
+  } else {
+    options.push = '';
+  }
+
   if (options.to) {
     sh.echo(`Setting base branch to "${options.to}"`);
     options.to = `--base "${options.to}"`;
@@ -158,7 +173,7 @@ const runCommands = (options) => {
   // Creating Pull Request
   if (
     sh.exec(
-      `hub pull-request -l "${issue.labels}" -m "${issue.title}" -m "Close #${issueNumber}" ${options.draft} ${options.to} | grep -F ""`,
+      `hub pull-request -l "${issue.labels}" -m "${issue.title}" -m "Close #${issueNumber}" ${options.draft} ${options.to} ${options.push} | grep -F ""`,
     ).code !== 0
   ) {
     sh.echo(
