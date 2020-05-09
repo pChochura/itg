@@ -109,10 +109,7 @@ const validateTo = (to) => {
 const validateOpen = (open) => {
   // If user didn't pass an issue number use current
   if (!open) {
-    return {
-      branch: utils.getCurrentBranchName(),
-      number: utils.getCurrentIssueNumber(),
-    };
+    return utils.getCurrentBranchName();
   }
 
   if (!utils.validateNumber(open)) {
@@ -120,10 +117,7 @@ const validateOpen = (open) => {
     sh.exit(1);
   }
 
-  return {
-    branch: utils.getBranchNameFromNumber(open),
-    number: open,
-  };
+  return utils.getBranchNameFromNumber(open);
 };
 
 const runCommands = (options) => {
@@ -158,7 +152,7 @@ const runCommands = (options) => {
 
   if (options.push) {
     sh.echo('Pushing changes before creating Pull Request');
-    options.push = '-p';
+    options.push = '-fp';
   } else {
     options.push = '';
   }
@@ -173,7 +167,7 @@ const runCommands = (options) => {
   // Creating Pull Request
   if (
     sh.exec(
-      `hub pull-request -l "${issue.labels}" -m "${issue.title}" -m "Close #${issueNumber}" ${options.draft} ${options.to} ${options.push} | grep -F ""`,
+      `hub pull-request -l "${issue.labels}" -m "${issue.title}" -m "Close #${issueNumber}" ${options.draft} ${options.push} ${options.to} | grep -F ""`,
     ).code !== 0
   ) {
     sh.echo(
@@ -196,12 +190,17 @@ const runCommands = (options) => {
 
 const runOpen = (open) => {
   sh.echo(
-    `Opening a website with PR (or issue if PR does not exist) associated with branch ${open.branch}`,
+    `Opening a website with PR associated with branch "${open}"`,
   );
 
   const prLink = sh
-    .exec(`hub pr show -u ${open.number} | grep -F ""`)
+    .exec(`hub pr show -u -h ${open} | grep -F ""`)
     .trimIndent();
+
+  if (!prLink) {
+    sh.echo(`There are no Pull Request associated with this branch`);
+    sh.exit(1);
+  }
 
   sh.exec(`xdg-open ${prLink}`);
   sh.exit(0);
