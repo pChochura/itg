@@ -189,13 +189,9 @@ const runCommands = (options) => {
 };
 
 const runOpen = (open) => {
-  sh.echo(
-    `Opening a website with PR associated with branch "${open}"`,
-  );
+  sh.echo(`Opening a website with PR associated with branch "${open}"`);
 
-  const prLink = sh
-    .exec(`hub pr show -u -h ${open} | grep -F ""`)
-    .trimIndent();
+  const prLink = sh.exec(`hub pr show -u -h ${open} | grep -F ""`).trimIndent();
 
   if (!prLink) {
     sh.echo(`There are no Pull Request associated with this branch`);
