@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 require('./src/utils');
 const issue = require('./src/issue');
 const pr = require('./src/pr');
