@@ -20,4 +20,4 @@ jobs:
     - name: Run tests
       run: npm test
     - name: Run format check
-      run: npm format:check
+      run: npm run format:check
