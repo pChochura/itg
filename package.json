@@ -26,7 +26,9 @@
   "homepage": "https://github.com/Pawelek99/Issue-Tracker-for-Github#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "prettier": "^2.0.5",
     "shelljs": "^0.8.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.0.5"
   }
 }
