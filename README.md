@@ -87,6 +87,7 @@ Sample usages:
 itg pr|pull-request [-h|--help|h|help|?]
 itg pr|pull-request [-d][-m][-p][--to <issue>]
 itg pr|pull-request open [<issue>]
+itg pr|pull-request ready [<issue>]
 ```
 
 > Command **pr** is used as a synonym of **pull-request**. Both can be used interchangeably.
@@ -132,6 +133,11 @@ Sample usages:
   itg pr|pull-request open 2
   ```
   This command opens a browser on the page corresponding to PR associated with the provided issue (or current if parameter **&lt;issue>** is omitted).
+- ```bash
+  itg pr|pull-request ready
+  itg pr|pull-request ready 2
+  ```
+  This command marks PR associated with the provided issue (or current if parameter **&lt;issue>** is omitted) as 'ready for review'.
 - ```bash
   itg pr|pull-request ?
   itg pr|pull-request h
@@ -234,6 +240,7 @@ Przykładowe użycia skryptu:
 itg pr|pull-request [-h|--help|h|help|?]
 itg pr|pull-request [-d][-m][-p][--to <issue>]
 itg pr|pull-request open [<issue>]
+itg pr|pull-request readt [<issue>]
 ```
 
 > Komenda 'pr' jest używana jako synonim 'pull-request'. Można używać ich zamiennie.
@@ -279,6 +286,11 @@ Przykładowe użycia skryptu:
   itg pr|pull-request open 2
   ```
   Powyższa komenda spowoduje otworzenie przeglądarki na PR powiązanym z obecnie wykonywanym zadaniem (lub wybranym jeśli parametr **&lt;issue>** został pominięty).
+- ```bash
+  itg pr|pull-request ready
+  itg pr|pull-request ready 2
+  ```
+  Powyższa komenda spowoduje oznaczenie PR powiązanego z obecnie wykonywanym zadaniem (lub wybranym jeśli parametr **&lt;issue>** został pominięty) jako 'ready for review'.
 - ```bash
   itg pr|pull-request ?
   itg pr|pull-request h

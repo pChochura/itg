@@ -31,6 +31,17 @@ const getUser = () => {
   return JSON.parse(user).login;
 };
 
+const getRepo = () => {
+  const repo = sh.exec('basename $(git remote get-url origin) .git');
+
+  if (!repo) {
+    sh.echo('We ecountered some problem with getting your repo name');
+    sh.exit(1);
+  }
+
+  return repo.trimEndline();
+};
+
 const getBranchNameFromNumber = (issueNumber) => {
   const issueTitleCommand = sh.exec(
     `hub issue show -f %t ${issueNumber} | grep -F ""`,
@@ -63,8 +74,35 @@ const getCurrentIssueNumber = () => {
   const number = branchName.substring(indexOfI + 1);
   if (indexOfI === -1 || !validateNumber(number)) {
     sh.echo(
-      `There are not associated issue with current branch "${branchName}"`,
+      `There are no associated issues with current branch "${branchName}"`,
     );
+    sh.exit(1);
+  }
+
+  return number;
+};
+
+const getPrNumberFromBranch = (branch) => {
+  const prLink = sh
+    .exec(`hub pr show -u -h ${branch} | grep -F ""`)
+    .trimEndline();
+
+  if (!prLink) {
+    sh.echo(
+      `Something went wrong with downloading pull request for branch "${branch}"`,
+    );
+    sh.exit(1);
+  }
+
+  return getNumberFromLink(prLink);
+};
+
+const getNumberFromLink = (link) => {
+  const indexOfSlash = link.lastIndexOf('/') + 1;
+  const number = link.substring(indexOfSlash);
+
+  if (!number || !validateNumber(number)) {
+    sh.echo(`Something went wrong with getting issue number from "${link}"`);
     sh.exit(1);
   }
 
@@ -83,8 +121,11 @@ module.exports = {
   slugify,
   validateNumber,
   getUser,
+  getRepo,
   getBranchName,
   getBranchNameFromNumber,
   getCurrentBranchName,
   getCurrentIssueNumber,
+  getPrNumberFromBranch,
+  getNumberFromLink,
 };
