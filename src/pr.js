@@ -144,7 +144,7 @@ const validateReady = (ready) => {
     number: ready,
     branch: utils.getBranchNameFromNumber(ready),
   };
-}
+};
 
 const validateOpen = (open) => {
   // If user didn't pass an issue number use current
@@ -233,7 +233,9 @@ const runCommands = (options) => {
 };
 
 const runReady = (ready) => {
-  sh.echo(`Marking a PR associated with branch "${ready.branch}" as ready for review`);
+  sh.echo(
+    `Marking a PR associated with branch "${ready.branch}" as ready for review`,
+  );
 
   const repo = utils.getRepo();
   const owner = utils.getUser();
@@ -249,13 +251,17 @@ const runReady = (ready) => {
   }`;
 
   // Downloading id of the pull request (different from the number shown on github)
-  let output = JSON.parse(sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline());
+  let output = JSON.parse(
+    sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline(),
+  );
   if (output.errors) {
-    if (output.errors.find(error => error.type === 'NOT_FOUND')) {
-      sh.echo('It looks like there are not Pull Request associated with this branch');
+    if (output.errors.find((error) => error.type === 'NOT_FOUND')) {
+      sh.echo(
+        'It looks like there are not Pull Request associated with this branch',
+      );
     } else {
       sh.echo('Some generic errors. Take a look: ');
-      output.errors.forEach(error => {
+      output.errors.forEach((error) => {
         sh.echo(error.message);
       });
     }
@@ -276,23 +282,29 @@ const runReady = (ready) => {
   }`;
 
   // Sending query changing draft status to false
-  output = JSON.parse(sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline());
+  output = JSON.parse(
+    sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline(),
+  );
   if (output.errors) {
     sh.echo('Some generic errors. Take a look: ');
-    output.errors.forEach(error => {
+    output.errors.forEach((error) => {
       sh.echo(error.message);
     });
     sh.exit(1);
   }
 
-  sh.echo(`Pull Request associated with this branch is now ready for review (#${prNumber})`);
+  sh.echo(
+    `Pull Request associated with this branch is now ready for review (#${prNumber})`,
+  );
   sh.exit(0);
-}
+};
 
 const runOpen = (open) => {
   sh.echo(`Opening a website with PR associated with branch "${open}"`);
 
-  const prLink = sh.exec(`hub pr show -u -h ${open} | grep -F ""`).trimEndline();
+  const prLink = sh
+    .exec(`hub pr show -u -h ${open} | grep -F ""`)
+    .trimEndline();
 
   if (!prLink) {
     sh.echo(`There are no Pull Request associated with this branch`);

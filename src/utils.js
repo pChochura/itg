@@ -40,7 +40,7 @@ const getRepo = () => {
   }
 
   return repo.trimEndline();
-}
+};
 
 const getBranchNameFromNumber = (issueNumber) => {
   const issueTitleCommand = sh.exec(
@@ -83,15 +83,19 @@ const getCurrentIssueNumber = () => {
 };
 
 const getPrNumberFromBranch = (branch) => {
-  const prLink = sh.exec(`hub pr show -u -h ${branch} | grep -F ""`).trimEndline();
+  const prLink = sh
+    .exec(`hub pr show -u -h ${branch} | grep -F ""`)
+    .trimEndline();
 
   if (!prLink) {
-    sh.echo(`Something went wrong with downloading pull request for branch "${branch}"`);
+    sh.echo(
+      `Something went wrong with downloading pull request for branch "${branch}"`,
+    );
     sh.exit(1);
   }
 
   return getNumberFromLink(prLink);
-}
+};
 
 const getNumberFromLink = (link) => {
   const indexOfSlash = link.lastIndexOf('/') + 1;
@@ -103,7 +107,7 @@ const getNumberFromLink = (link) => {
   }
 
   return number;
-}
+};
 
 String.prototype.trimIndent = function () {
   return this.replace(/\n */g, '\n');
