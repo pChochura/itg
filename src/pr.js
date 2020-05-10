@@ -10,8 +10,9 @@ const showHelp = () => {
     Use this script instead of creating PR through the browser
     because this way the PR will be marked with the correct label and appropriate issue will be linked.
 
-    Usage:  ${process.env.LIB_NAME} [-h] [-d] [-m] [-p] [--to <issue>]
-          \t${process.env.LIB_NAME} open [<issue>]
+    Usage:  ${process.env.LIB_NAME} pull-request|pr [-h] [-d] [-m] [-p] [--to <issue>]
+          \t${process.env.LIB_NAME} pull-request|pr open [<issue>]
+          \t${process.env.LIB_NAME} pull-request|pr ready [<issue>]
     Options:
     \t-h, --help, -help, h, help, ?   - displays this help message
     \t-d, --draft                     - marks newly created Pull Request as a draft
@@ -19,6 +20,7 @@ const showHelp = () => {
     \t-p, --push                      - push changes before creating a Pull Request
     \t--to <issue number>             - allows to choose a branch to be merged to by selecting an issue
     \topen [<issue number>]           - opens a webiste with PR associated with the current (or selected) issue
+    \tready [<issue number>]          - marks existing pull request associated with the current (or selected) issue as ready for review
     `.trimIndent(),
   );
   sh.exit(0);
@@ -45,6 +47,11 @@ const parseArgs = (args) => {
 
       // Skip checking 'open' parameter
       i++;
+    } else if (['ready'].indexOf(args[i]) !== -1) {
+      options.ready = args[i + 1];
+
+      // Skip checking 'ready' parameter
+      i++;
     }
   }
 
@@ -63,6 +70,20 @@ const validateOptions = (tempOptions) => {
     }
 
     options.open = validateOpen(tempOptions.open);
+
+    // Return now to avoid checking other options
+    return options;
+  }
+
+  // Validate 'ready'
+  if (tempOptions.hasOwnProperty('ready')) {
+    // User typed more options than just "ready [<issue>]"
+    if (Object.keys(tempOptions).length > 1) {
+      sh.echo('You cannot use option "ready" with other options');
+      sh.exit(1);
+    }
+
+    options.ready = validateReady(tempOptions.ready);
 
     // Return now to avoid checking other options
     return options;
@@ -105,6 +126,26 @@ const validateTo = (to) => {
   return utils.getBranchNameFromNumber(to);
 };
 
+const validateReady = (ready) => {
+  // If user didn't pass an issue number use current
+  if (!ready) {
+    return {
+      number: utils.getCurrentIssueNumber(),
+      branch: utils.getCurrentBranchName(),
+    };
+  }
+
+  if (!utils.validateNumber(ready)) {
+    sh.echo('Parameter passed to "ready" have to be an issue number');
+    sh.exit(1);
+  }
+
+  return {
+    number: ready,
+    branch: utils.getBranchNameFromNumber(ready),
+  };
+}
+
 const validateOpen = (open) => {
   // If user didn't pass an issue number use current
   if (!open) {
@@ -122,6 +163,10 @@ const validateOpen = (open) => {
 const runCommands = (options) => {
   if (options.open) {
     runOpen(options.open);
+  }
+
+  if (options.ready) {
+    runReady(options.ready);
   }
 
   const issueNumber = utils.getCurrentIssueNumber();
@@ -187,10 +232,67 @@ const runCommands = (options) => {
   sh.exit(0);
 };
 
+const runReady = (ready) => {
+  sh.echo(`Marking a PR associated with branch "${ready.branch}" as ready for review`);
+
+  const repo = utils.getRepo();
+  const owner = utils.getUser();
+  const prNumber = utils.getPrNumberFromBranch(ready.branch);
+
+  let query = `query {
+    repository(name: "${repo}", owner: "${owner}") {
+      pullRequest(number: ${prNumber}) {
+        id
+        isDraft
+      }
+    }
+  }`;
+
+  // Downloading id of the pull request (different from the number shown on github)
+  let output = JSON.parse(sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline());
+  if (output.errors) {
+    if (output.errors.find(error => error.type === 'NOT_FOUND')) {
+      sh.echo('It looks like there are not Pull Request associated with this branch');
+    } else {
+      sh.echo('Some generic errors. Take a look: ');
+      output.errors.forEach(error => {
+        sh.echo(error.message);
+      });
+    }
+    sh.exit(1);
+  }
+
+  if (!output.data.repository.pullRequest.isDraft) {
+    sh.echo('It looks like the Pull Request is already ready for review');
+    sh.exit(1);
+  }
+
+  const prId = output.data.repository.pullRequest.id;
+
+  query = `mutation {
+    markPullRequestReadyForReview(input: {pullRequestId: "${prId}"}) {
+      clientMutationId
+    }
+  }`;
+
+  // Sending query changing draft status to false
+  output = JSON.parse(sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline());
+  if (output.errors) {
+    sh.echo('Some generic errors. Take a look: ');
+    output.errors.forEach(error => {
+      sh.echo(error.message);
+    });
+    sh.exit(1);
+  }
+
+  sh.echo(`Pull Request associated with this branch is now ready for review (#${prNumber})`);
+  sh.exit(0);
+}
+
 const runOpen = (open) => {
   sh.echo(`Opening a website with PR associated with branch "${open}"`);
 
-  const prLink = sh.exec(`hub pr show -u -h ${open} | grep -F ""`).trimIndent();
+  const prLink = sh.exec(`hub pr show -u -h ${open} | grep -F ""`).trimEndline();
 
   if (!prLink) {
     sh.echo(`There are no Pull Request associated with this branch`);
