@@ -1,4 +1,19 @@
 # Issue-Tracker-for-Github
+![Tests](https://github.com/Pawelek99/itg/workflows/Tests/badge.svg) [![npm version](https://badge.fury.io/js/itg.svg)](https://badge.fury.io/js/itg)
+
+---
+
+## Table of contents
+
+* [But what for?](#but-what-for)
+* [Description](#description)
+  - [Creating a new issue](#creating-a-new-issue)
+  - [Creating Pull Requests (PR)](#creating-pull-requests-pr)
+* [Dla tych, którym łatwiej po polsku :D](#dla-tych-którym-łatwiej-po-polsku-d)
+  - [Ale po co to?](#ale-po-co-to)
+  - [Opis](#opis)
+    * [Tworzenie nowego zadania (issue)](#tworzenie-nowego-zadania-issue)
+    * [Tworzenie Pull Requestów (PR)](#tworzenie-pull-requestów-pr)
 
 ---
 
@@ -8,7 +23,7 @@ To install **itg** library just type in the console:
 npm install -g itg
 ```
 
-Keep in mind that this library will only be useful when installed globally.
+Keep in mind that this library will only be useful when installed **globally**.
 
 #### But what for?
 
