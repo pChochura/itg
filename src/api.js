@@ -1,4 +1,6 @@
 require('dotenv').config();
+const fs = require('fs');
+const os = require('os');
 const f = require('node-fetch');
 const sh = require('shelljs');
 const read = require('read');
@@ -10,7 +12,7 @@ Object.prototype.fromPath = function (...path) {
   return path.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), this);
 };
 
-const askForToken = async () => {
+const askForCredentials = async () => {
   return new Promise((resolve, _) => {
     read({ prompt: 'Username: ', silent: false }, (error, username) => {
       if (error) {
@@ -34,7 +36,7 @@ const askForToken = async () => {
 };
 
 const auth = async () => {
-  const { username, password } = await askForToken();
+  const { username, password } = await askForCredentials();
 
   const res = await f(`${API_URL}/authorizations`, {
     method: 'POST',
@@ -50,13 +52,30 @@ const auth = async () => {
   return res.json();
 };
 
+const getToken = () => {
+  const path = `${os.homedir()}/.itg/.secret`;
+
+  if (fs.existsSync(path)) {
+    return Buffer.from(
+      fs.readFileSync(path).toLocaleString(),
+      'base64',
+    ).toString();
+  }
+};
+
+const setToken = async (token) => {
+  const path = `${os.homedir()}/.itg/.secret`;
+
+  fs.writeFileSync(path, Buffer.from(token).toString('base64'));
+};
+
 const getAuthHeaders = async () => {
-  let token = process.env.TOKEN || (await cache.get('TOKEN'));
+  let token = process.env.TOKEN || getToken();
 
   // Ask for creating authorization token if it does not exist
   if (!token) {
     token = (await auth()).token;
-    await cache.set('TOKEN', token);
+    setToken(token);
   }
 
   return {
