@@ -143,7 +143,7 @@ const validateCustom = async (custom) => {
   }
 
   // Download labels from Github repo
-  const labels = await api.getLabels();
+  const labels = (await api.getLabels()).map((label) => label.name);
 
   if (labels.indexOf(custom) === -1) {
     sh.echo(`You have to provide a label from: [${labels.join(', ')}]`);
