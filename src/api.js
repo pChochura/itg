@@ -24,7 +24,7 @@ const askForToken = async () => {
 
         resolve({
           username,
-          password
+          password,
         });
       });
     });
@@ -37,7 +37,8 @@ const auth = async () => {
   const res = await f(`${process.env.API_URL}/authorizations`, {
     method: 'POST',
     headers: {
-      Authorization: 'Basic ' + Buffer.from(`${username}:${password}`).toString('base64')
+      Authorization:
+        'Basic ' + Buffer.from(`${username}:${password}`).toString('base64'),
     },
     body: JSON.stringify({
       scopes: ['repo', 'user'],
@@ -48,7 +49,7 @@ const auth = async () => {
 };
 
 const getAuthHeaders = async () => {
-  let token = process.env.TOKEN || await cache.get('TOKEN');
+  let token = process.env.TOKEN || (await cache.get('TOKEN'));
 
   // Ask for creating authorization token if it does not exist
   if (!token) {
@@ -110,7 +111,7 @@ const methods = {
   },
 
   getIssue: async (issueNumber, withLabels) => {
-    if (!withLabels && await cache.has(`ISSUE_${issueNumber}`)) {
+    if (!withLabels && (await cache.has(`ISSUE_${issueNumber}`))) {
       return cache.get(`ISSUE_${issueNumber}`);
     }
 
@@ -152,7 +153,7 @@ const methods = {
 
     let labels = await queryRepo(`labels(first: 50) { nodes { id name } }`);
     labels = labels.fromPath('data', 'repository', 'labels', 'nodes');
-    
+
     return cache.set('LABELS', labels);
   },
 
