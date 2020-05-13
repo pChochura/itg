@@ -184,8 +184,8 @@ const runCommands = async (options) => {
   const issue = await api.getIssue(issueNumber, true);
 
   sh.echo(
-    `Creating Pull Request for issue #${issueNumber}
-    "${issue.name}", labeled: "${issue.labels.join(', ')}"`.replace(/\n/, ''),
+    `Creating Pull Request for issue #${issueNumber} "${issue.title}",
+    labeled: "${issue.labels.map((label) => label.name).join(', ')}"`.replace(/\n/, ' ').replace(/(  )+/g, ''),
   );
 
   if (options.draft) {
@@ -225,6 +225,7 @@ const runCommands = async (options) => {
 
   // Opening webiste if option '--show' was set
   if (options.show) {
+    sh.echo('Opening a website with this PR');
     sh.exec(`xdg-open ${pullRequest.url}`);
   }
 
