@@ -1,6 +1,6 @@
 {
   "name": "itg",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Issue Tracker for Github",
   "main": "bin.js",
   "bin": "./bin.js",
@@ -40,7 +40,7 @@
     "src/pr.js",
     "src/utils.js",
     "src/api.js",
-    "src.cache.js",
+    "src/cache.js",
     "README.md"
   ],
   "prettier": {
