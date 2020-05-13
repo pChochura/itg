@@ -194,6 +194,7 @@ const runCommands = async (options) => {
 
   if (options.push) {
     sh.echo('Pushing changes before creating Pull Request');
+    sh.exec('git push');
   }
 
   if (options.to) {
