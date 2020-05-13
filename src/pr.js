@@ -1,5 +1,6 @@
-const utils = require('./utils');
+const api = require('./api');
 const sh = require('shelljs');
+const utils = require('./utils');
 
 sh.config.silent = true;
 
@@ -10,9 +11,9 @@ const showHelp = () => {
     Use this script instead of creating PR through the browser
     because this way the PR will be marked with the correct label and appropriate issue will be linked.
 
-    Usage:  ${process.env.LIB_NAME} pull-request|pr [-h] [-d] [-m] [-p] [--to <issue>]
-          \t${process.env.LIB_NAME} pull-request|pr open [<issue>]
-          \t${process.env.LIB_NAME} pull-request|pr ready [<issue>]
+    Usage:  ${process.env.LIB_NAME} [-h] [-d] [-m] [-p] [--to <issue>]
+          \t${process.env.LIB_NAME} open [<issue>]
+          \t${process.env.LIB_NAME} ready [<issue>]
     Options:
     \t-h, --help, -help, h, help, ?   - displays this help message
     \t-d, --draft                     - marks newly created Pull Request as a draft
@@ -26,7 +27,7 @@ const showHelp = () => {
   sh.exit(0);
 };
 
-const parseArgs = (args) => {
+const parseArgs = async (args) => {
   const options = {};
   for (let i = 0; i < args.length; i++) {
     if (['-h', '--help', '-help', 'h', 'help', '?'].indexOf(args[i]) !== -1) {
@@ -58,7 +59,7 @@ const parseArgs = (args) => {
   return validateOptions(options);
 };
 
-const validateOptions = (tempOptions) => {
+const validateOptions = async (tempOptions) => {
   const options = {};
 
   // Validate 'open'
@@ -69,7 +70,7 @@ const validateOptions = (tempOptions) => {
       sh.exit(1);
     }
 
-    options.open = validateOpen(tempOptions.open);
+    options.open = await validateOpen(tempOptions.open);
 
     // Return now to avoid checking other options
     return options;
@@ -83,7 +84,7 @@ const validateOptions = (tempOptions) => {
       sh.exit(1);
     }
 
-    options.ready = validateReady(tempOptions.ready);
+    options.ready = await validateReady(tempOptions.ready);
 
     // Return now to avoid checking other options
     return options;
@@ -111,13 +112,13 @@ const validateOptions = (tempOptions) => {
       sh.exit(1);
     }
 
-    options.to = validateTo(tempOptions.to);
+    options.to = await validateTo(tempOptions.to);
   }
 
   return options;
 };
 
-const validateTo = (to) => {
+const validateTo = async (to) => {
   if (!utils.validateNumber(to)) {
     sh.echo('Parameter passed to "--to" have to be an issue number');
     sh.exit(1);
@@ -126,7 +127,7 @@ const validateTo = (to) => {
   return utils.getBranchNameFromNumber(to);
 };
 
-const validateReady = (ready) => {
+const validateReady = async (ready) => {
   // If user didn't pass an issue number use current
   if (!ready) {
     return {
@@ -142,11 +143,11 @@ const validateReady = (ready) => {
 
   return {
     number: ready,
-    branch: utils.getBranchNameFromNumber(ready),
+    branch: await utils.getBranchNameFromNumber(ready),
   };
-};
+}
 
-const validateOpen = (open) => {
+const validateOpen = async (open) => {
   // If user didn't pass an issue number use current
   if (!open) {
     return utils.getCurrentBranchName();
@@ -160,62 +161,54 @@ const validateOpen = (open) => {
   return utils.getBranchNameFromNumber(open);
 };
 
-const runCommands = (options) => {
+const runCommands = async (options) => {
   if (options.open) {
-    runOpen(options.open);
+    await runOpen(options.open);
+    sh.exit(0);
   }
 
   if (options.ready) {
-    runReady(options.ready);
+    await runReady(options.ready);
+    sh.exit(0);
   }
 
   const issueNumber = utils.getCurrentIssueNumber();
-  const issue = JSON.parse(
-    sh
-      .exec(
-        `hub issue show -f '{"title":"%t","labels":"%L"}' ${issueNumber} | grep -F ""`,
-      )
-      .trimIndent(),
-  );
+  const issue = await api.getIssue(issueNumber, true);
 
   sh.echo(
-    `Creating Pull Request for issue #${issueNumber} "${issue.title}", labeled: "${issue.labels}"`,
+    `Creating Pull Request for issue #${issueNumber} "${issue.name}", labeled: "${issue.labels.join(', ')}"`,
   );
-
-  // If there's a more than one label, remove spaces around commas
-  if (issue.labels.includes(',')) {
-    issue.labels = issue.labels.replace(/, /g, ',');
-  }
 
   if (options.draft) {
     sh.echo('Marking Pull Request as a draft');
-    options.draft = '-d';
-  } else {
-    options.draft = '';
   }
 
   if (options.push) {
     sh.echo('Pushing changes before creating Pull Request');
-    options.push = '-fp';
-  } else {
-    options.push = '';
   }
 
   if (options.to) {
     sh.echo(`Setting base branch to "${options.to}"`);
-    options.to = `--base "${options.to}"`;
   } else {
-    options.to = '';
+    options.to = 'master';
   }
 
+  options.from = utils.getCurrentBranchName();
+
   // Creating Pull Request
-  if (
-    sh.exec(
-      `hub pull-request -l "${issue.labels}" -m "${issue.title}" -m "Close #${issueNumber}" ${options.draft} ${options.push} ${options.to} | grep -F ""`,
-    ).code !== 0
-  ) {
+  let pullRequest = await api.createPullRequest(issue, options);
+  if (!pullRequest) {
     sh.echo(
       `We ecountered some problems with creating PR for issue #${issueNumber} "${issue.title}"`,
+    );
+    sh.exit(1);
+  }
+
+  // Setting labels to the PR
+  pullRequest = await api.updatePullRequest(pullRequest.id, issue.labels);
+  if (!pullRequest) {
+    sh.echo(
+      `We ecountered some problems with setting labels for this Pull Request`,
     );
     sh.exit(1);
   }
@@ -232,91 +225,48 @@ const runCommands = (options) => {
   sh.exit(0);
 };
 
-const runReady = (ready) => {
-  sh.echo(
-    `Marking a PR associated with branch "${ready.branch}" as ready for review`,
-  );
+const runReady = async (ready) => {
+  sh.echo(`Marking a PR associated with branch "${ready.branch}" as ready for review`);
 
-  const repo = utils.getRepo();
-  const owner = utils.getUser();
-  const prNumber = utils.getPrNumberFromBranch(ready.branch);
+  let pullRequest = await api.getPullRequest(ready.branch);
 
-  let query = `query {
-    repository(name: "${repo}", owner: "${owner}") {
-      pullRequest(number: ${prNumber}) {
-        id
-        isDraft
-      }
-    }
-  }`;
-
-  // Downloading id of the pull request (different from the number shown on github)
-  let output = JSON.parse(
-    sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline(),
-  );
-  if (output.errors) {
-    if (output.errors.find((error) => error.type === 'NOT_FOUND')) {
-      sh.echo(
-        'It looks like there are not Pull Request associated with this branch',
-      );
-    } else {
-      sh.echo('Some generic errors. Take a look: ');
-      output.errors.forEach((error) => {
-        sh.echo(error.message);
-      });
-    }
+  if (!pullRequest) {
+    sh.echo('We ecountered some problems with downloading a PR');
     sh.exit(1);
   }
 
-  if (!output.data.repository.pullRequest.isDraft) {
+  if (!pullRequest.isDraft) {
     sh.echo('It looks like the Pull Request is already ready for review');
     sh.exit(1);
   }
 
-  const prId = output.data.repository.pullRequest.id;
+  pullRequest = await api.markPRAsReady(pullRequest.id);
 
-  query = `mutation {
-    markPullRequestReadyForReview(input: {pullRequestId: "${prId}"}) {
-      clientMutationId
-    }
-  }`;
-
-  // Sending query changing draft status to false
-  output = JSON.parse(
-    sh.exec(`hub api graphql -f query='${query}' | grep -F ""`).trimEndline(),
-  );
-  if (output.errors) {
-    sh.echo('Some generic errors. Take a look: ');
-    output.errors.forEach((error) => {
-      sh.echo(error.message);
-    });
+  if (!pullRequest) {
+    sh.echo('We ecountered some problems with marking this PR as ready for review');
     sh.exit(1);
   }
 
-  sh.echo(
-    `Pull Request associated with this branch is now ready for review (#${prNumber})`,
-  );
+  sh.echo(`Pull Request associated with this branch is now ready for review (#${pullRequest.id})`);
   sh.exit(0);
-};
+}
 
-const runOpen = (open) => {
+const runOpen = async (open) => {
   sh.echo(`Opening a website with PR associated with branch "${open}"`);
 
-  const prLink = sh
-    .exec(`hub pr show -u -h ${open} | grep -F ""`)
-    .trimEndline();
+  const pr = await api.getPullRequest(open);
 
-  if (!prLink) {
+  if (!pr) {
     sh.echo(`There are no Pull Request associated with this branch`);
     sh.exit(1);
   }
 
-  sh.exec(`xdg-open ${prLink}`);
+  sh.exec(`xdg-open ${pr.url}`);
   sh.exit(0);
 };
 
-const pr = (args) => {
-  runCommands(parseArgs(args));
+const pr = async (args) => {
+  await runCommands(await parseArgs(args));
 };
 
 module.exports = pr;

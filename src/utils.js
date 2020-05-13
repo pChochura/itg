@@ -1,6 +1,21 @@
 const sh = require('shelljs');
+const api = require('./api');
 
 sh.config.silent = true;
+
+String.prototype.trimIndent = function () {
+  return this.replace(/\n */g, '\n');
+};
+
+String.prototype.trimEndline = function () {
+  return this.replace(/\n$/, '');
+};
+
+Array.prototype.asyncForEach = async function (callback) {
+  for (let index = 0; index < this.length; index++) {
+    await callback(this[index], index, this);
+  }
+}
 
 const slugify = (input) => {
   return input
@@ -21,43 +36,15 @@ const printError = (text) => {
   // sh.echo('-e', '\033[31mYou have to pass an issue number to "open" option\033[0m');
 };
 
-const getUser = () => {
-  const user = sh.exec('hub api user | grep -F ""');
-  if (!user) {
-    sh.echo('We ecountered some problem with getting your username');
+const getBranchNameFromNumber = async (issueNumber) => {
+  const issue = await api.getIssue(issueNumber);
+
+  if (!issue) {
+    sh.echo(`Something went wrong with getting issue title (#${issueNumber})`);
     sh.exit(1);
   }
 
-  return JSON.parse(user).login;
-};
-
-const getRepo = () => {
-  const repo = sh.exec('basename $(git remote get-url origin) .git');
-
-  if (!repo) {
-    sh.echo('We ecountered some problem with getting your repo name');
-    sh.exit(1);
-  }
-
-  return repo.trimEndline();
-};
-
-const getBranchNameFromNumber = (issueNumber) => {
-  const issueTitleCommand = sh.exec(
-    `hub issue show -f %t ${issueNumber} | grep -F ""`,
-    {
-      silent: true,
-    },
-  );
-
-  if (issueTitleCommand.code !== 0) {
-    sh.echo(
-      `Something went wrong with downloading issue (#${issueNumber}) title`,
-    );
-    sh.exit(1);
-  }
-
-  return getBranchName(issueTitleCommand.trimEndline(), issueNumber);
+  return getBranchName(issue.title, issueNumber);
 };
 
 const getBranchName = (issueTitle, issueNumber) => {
@@ -72,6 +59,7 @@ const getCurrentIssueNumber = () => {
   const branchName = getCurrentBranchName();
   const indexOfI = branchName.lastIndexOf('i');
   const number = branchName.substring(indexOfI + 1);
+
   if (indexOfI === -1 || !validateNumber(number)) {
     sh.echo(
       `There are no associated issues with current branch "${branchName}"`,
@@ -80,21 +68,6 @@ const getCurrentIssueNumber = () => {
   }
 
   return number;
-};
-
-const getPrNumberFromBranch = (branch) => {
-  const prLink = sh
-    .exec(`hub pr show -u -h ${branch} | grep -F ""`)
-    .trimEndline();
-
-  if (!prLink) {
-    sh.echo(
-      `Something went wrong with downloading pull request for branch "${branch}"`,
-    );
-    sh.exit(1);
-  }
-
-  return getNumberFromLink(prLink);
 };
 
 const getNumberFromLink = (link) => {
@@ -109,23 +82,18 @@ const getNumberFromLink = (link) => {
   return number;
 };
 
-String.prototype.trimIndent = function () {
-  return this.replace(/\n */g, '\n');
-};
-
-String.prototype.trimEndline = function () {
-  return this.replace(/\n$/, '');
-};
+const getBranchLink = async (branch) => {
+  const repoLink = await api.getRepo().url;
+  return `${repoLink}/tree/${branch}`;
+}
 
 module.exports = {
   slugify,
   validateNumber,
-  getUser,
-  getRepo,
   getBranchName,
   getBranchNameFromNumber,
   getCurrentBranchName,
   getCurrentIssueNumber,
-  getPrNumberFromBranch,
   getNumberFromLink,
+  getBranchLink,
 };
