@@ -21,12 +21,12 @@ const run = async () => {
     await issue(args.slice(1));
     sh.exit(0);
   }
-  
+
   if (['pull-request', 'pr'].indexOf(args[0]) !== -1) {
     await pr(args.slice(1));
     sh.exit(0);
   }
-  
+
   // User must have typed something wrong
   sh.echo(
     `
@@ -38,7 +38,8 @@ const run = async () => {
     
     If you want help with OPTIONS, just type 'help' instead of OPTIONS.
     Have fun!
-  `.trimIndent());
+  `.trimIndent(),
+  );
 };
 
 run();

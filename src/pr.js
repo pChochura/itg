@@ -145,7 +145,7 @@ const validateReady = async (ready) => {
     number: ready,
     branch: await utils.getBranchNameFromNumber(ready),
   };
-}
+};
 
 const validateOpen = async (open) => {
   // If user didn't pass an issue number use current
@@ -176,7 +176,8 @@ const runCommands = async (options) => {
   const issue = await api.getIssue(issueNumber, true);
 
   sh.echo(
-    `Creating Pull Request for issue #${issueNumber} "${issue.name}", labeled: "${issue.labels.join(', ')}"`,
+    `Creating Pull Request for issue #${issueNumber}
+    "${issue.name}", labeled: "${issue.labels.join(', ')}"`.replace(/\n/, ''),
   );
 
   if (options.draft) {
@@ -226,7 +227,9 @@ const runCommands = async (options) => {
 };
 
 const runReady = async (ready) => {
-  sh.echo(`Marking a PR associated with branch "${ready.branch}" as ready for review`);
+  sh.echo(
+    `Marking a PR associated with branch "${ready.branch}" as ready for review`,
+  );
 
   let pullRequest = await api.getPullRequest(ready.branch);
 
@@ -243,13 +246,17 @@ const runReady = async (ready) => {
   pullRequest = await api.markPRAsReady(pullRequest.id);
 
   if (!pullRequest) {
-    sh.echo('We ecountered some problems with marking this PR as ready for review');
+    sh.echo(
+      'We ecountered some problems with marking this PR as ready for review',
+    );
     sh.exit(1);
   }
 
-  sh.echo(`Pull Request associated with this branch is now ready for review (#${pullRequest.id})`);
+  sh.echo(
+    `Pull Request associated with this branch is now ready for review (#${pullRequest.id})`,
+  );
   sh.exit(0);
-}
+};
 
 const runOpen = async (open) => {
   sh.echo(`Opening a website with PR associated with branch "${open}"`);

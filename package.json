@@ -1,6 +1,6 @@
 {
   "name": "itg",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Issue Tracker for Github",
   "main": "bin.js",
   "bin": "./bin.js",
@@ -26,6 +26,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "git-root-dir": "^1.0.2",
+    "node-fetch": "^2.6.0",
     "shelljs": "^0.8.4"
   },
   "devDependencies": {
