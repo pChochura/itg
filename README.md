@@ -264,7 +264,7 @@ Przykładowe użycia skryptu:
 itg pr|pull-request [-h|--help|h|help|?]
 itg pr|pull-request [-d][-m][-p][-s][--to <issue>]
 itg pr|pull-request open [<issue>]
-itg pr|pull-request readt [<issue>]
+itg pr|pull-request ready [<issue>]
 ```
 
 > Komenda 'pr' jest używana jako synonim 'pull-request'. Można używać ich zamiennie.
