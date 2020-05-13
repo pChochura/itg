@@ -185,7 +185,9 @@ const runCommands = async (options) => {
 
   sh.echo(
     `Creating Pull Request for issue #${issueNumber} "${issue.title}",
-    labeled: "${issue.labels.map((label) => label.name).join(', ')}"`.replace(/\n/, ' ').replace(/(  )+/g, ''),
+    labeled: "${issue.labels.map((label) => label.name).join(', ')}"`
+      .replace(/\n/, ' ')
+      .replace(/(  )+/g, ''),
   );
 
   if (options.draft) {

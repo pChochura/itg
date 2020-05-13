@@ -20,7 +20,9 @@ const query = async (query, isMutation) => {
   const res = await f(process.env.API_URL, {
     method: 'POST',
     headers: getAuthHeaders(),
-    body: `{ "query": "${isMutation ? 'mutation' : ''} { ${query.replace(/\n| +/g, ' ').replace(/"/g, '\\"')} }" }`,
+    body: `{ "query": "${isMutation ? 'mutation' : ''} { ${query
+      .replace(/\n| +/g, ' ')
+      .replace(/"/g, '\\"')} }" }`,
   });
   return await res.json();
 };
@@ -48,7 +50,9 @@ const methods = {
 
   getIssue: async (issueNumber, withLabels) => {
     let issue = await queryRepo(
-      `issue(number: ${issueNumber}) { id number title ${withLabels ? 'labels(first: 10) { nodes { name id } }' : ''} }`,
+      `issue(number: ${issueNumber}) { id number title ${
+        withLabels ? 'labels(first: 10) { nodes { name id } }' : ''
+      } }`,
     );
     issue = issue.fromPath('data', 'repository', 'issue');
     if (withLabels) {
@@ -86,14 +90,17 @@ const methods = {
       labelsIds.push((await methods.getLabel(label)).id);
     });
     const issue = await mutation(`createIssue(input: {
-      repositoryId: "${repo.id}", title: "${title}"${assignee ? `, assigneeIds: "${assignee}"` : ''}, labelIds: "${labelsIds.join(',')}"
+      repositoryId: "${repo.id}", title: "${title}"${
+      assignee ? `, assigneeIds: "${assignee}"` : ''
+    }, labelIds: "${labelsIds.join(',')}"
     }) { issue { id url number } }`);
     return issue.fromPath('data', 'createIssue', 'issue');
   },
 
   updateIssue: async (id, body, assignee) => {
     const issue = await mutation(`updateIssue(input: {
-      id: "${id}"${body ? `, body: "${body}"` : ''}${assignee ? `, assigneeIds: "${assignee}"` : ''
+      id: "${id}"${body ? `, body: "${body}"` : ''}${
+      assignee ? `, assigneeIds: "${assignee}"` : ''
     }
     }) { issue { id url number } }`);
     return issue.fromPath('data', 'updateIssue', 'issue');
@@ -102,8 +109,12 @@ const methods = {
   createPullRequest: async (issue, options) => {
     const repo = await methods.getRepo();
     const pr = await mutation(`createPullRequest(input: {
-      repositoryId: "${repo.id}", baseRefName: "${options.to}", headRefName: "${options.from}",
-      title: "${issue.title}", draft: ${options.draft === true}, body: "Close #${issue.number}"
+      repositoryId: "${repo.id}", baseRefName: "${options.to}", headRefName: "${
+      options.from
+    }",
+      title: "${issue.title}", draft: ${
+      options.draft === true
+    }, body: "Close #${issue.number}"
     }) { pullRequest { id number url } }`);
     return pr.fromPath('data', 'createPullRequest', 'pullRequest');
   },
