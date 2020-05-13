@@ -11,7 +11,7 @@ const showHelp = () => {
     Use this script instead of creating PR through the browser
     because this way the PR will be marked with the correct label and appropriate issue will be linked.
 
-    Usage:  ${process.env.LIB_NAME} [-h] [-d] [-m] [-p] [--to <issue>]
+    Usage:  ${process.env.LIB_NAME} [-h] [-d] [-m] [-p] [-s] [--to <issue>]
           \t${process.env.LIB_NAME} open [<issue>]
           \t${process.env.LIB_NAME} ready [<issue>]
     Options:
@@ -19,6 +19,7 @@ const showHelp = () => {
     \t-d, --draft                     - marks newly created Pull Request as a draft
     \t-m, --master                    - switches you to the master branch after creating a Pull Request
     \t-p, --push                      - push changes before creating a Pull Request
+    \t-s, --show                      - opens a website with PR after creating one
     \t--to <issue number>             - allows to choose a branch to be merged to by selecting an issue
     \topen [<issue number>]           - opens a webiste with PR associated with the current (or selected) issue
     \tready [<issue number>]          - marks existing pull request associated with the current (or selected) issue as ready for review
@@ -38,6 +39,8 @@ const parseArgs = async (args) => {
       options.master = true;
     } else if (['-p', '--push'].indexOf(args[i]) !== -1) {
       options.push = true;
+    } else if (['-s', '--show'].indexOf(args[i]) !== -1) {
+      options.show = true;
     } else if (['--to'].indexOf(args[i]) !== -1) {
       options.to = args[i + 1];
 
@@ -103,6 +106,11 @@ const validateOptions = async (tempOptions) => {
   // Validate 'push'
   if (tempOptions.push) {
     options.push = true;
+  }
+
+  // Validate 'show'
+  if (tempOptions.show) {
+    options.show = true;
   }
 
   // Validate 'to'
@@ -212,6 +220,11 @@ const runCommands = async (options) => {
       `We ecountered some problems with setting labels for this Pull Request`,
     );
     sh.exit(1);
+  }
+
+  // Opening webiste if option '--show' was set
+  if (options.show) {
+    sh.exec(`xdg-open ${pullRequest.url}`);
   }
 
   // Switching to 'master' branch if option '--master' was set

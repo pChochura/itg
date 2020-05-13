@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-require('./src/utils');
+require('dotenv').config();
 const issue = require('./src/issue');
 const pr = require('./src/pr');
 const sh = require('shelljs');
