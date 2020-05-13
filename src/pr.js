@@ -11,9 +11,9 @@ const showHelp = () => {
     Use this script instead of creating PR through the browser
     because this way the PR will be marked with the correct label and appropriate issue will be linked.
 
-    Usage:  ${process.env.LIB_NAME} [-h] [-d] [-m] [-p] [-s] [--to <issue>]
-          \t${process.env.LIB_NAME} open [<issue>]
-          \t${process.env.LIB_NAME} ready [<issue>]
+    Usage:  ${process.env.LIB_NAME} pull-request|pr [-h] [-d] [-m] [-p] [-s] [--to <issue>]
+          \t${process.env.LIB_NAME} pull-request|pr open [<issue>]
+          \t${process.env.LIB_NAME} pull-request|pr ready [<issue>]
     Options:
     \t-h, --help, -help, h, help, ?   - displays this help message
     \t-d, --draft                     - marks newly created Pull Request as a draft
