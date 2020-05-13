@@ -141,9 +141,15 @@ Sample usages:
   ```
   It will make sure that all local changes are pushed before creating a PR.
 - ```bash
+  itg pr|pull-request -s
+  itg pr|pull-request --show
+  ```
+  It will open a website with the newly created PR.
+- ```bash
   itg pr|pull-request -d -m
   itg pr|pull-request --to 23 --master -d
   itg pr|pull-request --to 2 --draft
+  itg pr|pull-request --show -m
   ```
   All of the above commands are correct. Order of the options is irrelevant. For every option there is its longer form, for instance **-d** and **--draft**. But for the option **--to** there is no abbreviation.
 - ```bash
@@ -168,8 +174,6 @@ Sample usages:
   If the help option was provided (no matter on what position) the other options will be discarded and ignored.
 
 ### Dla tych, którym łatwiej po polsku :D
-
-<details><summary>Wersja polska</summary>
 
 ---
 
@@ -258,7 +262,7 @@ Przykładowe użycia skryptu:
 
 ```bash
 itg pr|pull-request [-h|--help|h|help|?]
-itg pr|pull-request [-d][-m][-p][--to <issue>]
+itg pr|pull-request [-d][-m][-p][-s][--to <issue>]
 itg pr|pull-request open [<issue>]
 itg pr|pull-request readt [<issue>]
 ```
@@ -296,9 +300,15 @@ Przykładowe użycia skryptu:
   ```
   Przed utworzeniem Pull Requestu wszystkie lokalne zmiany zostaną wypchnięte.
 - ```bash
+  itg pr|pull-request -s
+  itg pr|pull-request --show
+  ```
+  Przed utworzeniem Pull Requestu zostanie otwarta przeglądarka.
+- ```bash
   itg pr|pull-request -d -m
   itg pr|pull-request --to 23 --master -d
   itg pr|pull-request --to 2 --draft
+  itg pr|pull-request --show -m
   ```
   Wszystkie z powyższych użyć są poprawne. Nie ma znaczenia w jakiej kolejności parametry zostały podane. Do każdego z argumentu istnieje jego dłuższa forma, np: **-d** i **--draft**. Natomiast dla argumentu **--to** nie istnieje żaden skrót.
 - ```bash
@@ -321,4 +331,3 @@ Przykładowe użycia skryptu:
   ```
   Każde z powyższych użyć skryptu spowoduje wyświetlenie pomocy podobnej do tej.
   Jeżeli został podany parametr wyświetlający pomoc (niezależnie od pozycji na, której został wspiany), to wszystkie pozostałe argumenty są pomijane i ignorowane.
-</details>

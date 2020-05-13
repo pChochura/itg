@@ -4,6 +4,8 @@ const sh = require('shelljs');
 const read = require('read');
 const cache = require('./cache');
 
+const API_URL = 'https://api.github.com';
+
 Object.prototype.fromPath = function (...path) {
   return path.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), this);
 };
@@ -34,7 +36,7 @@ const askForToken = async () => {
 const auth = async () => {
   const { username, password } = await askForToken();
 
-  const res = await f(`${process.env.API_URL}/authorizations`, {
+  const res = await f(`${API_URL}/authorizations`, {
     method: 'POST',
     headers: {
       Authorization:
@@ -67,7 +69,7 @@ const mutation = async (mutation) => {
 };
 
 const query = async (query, isMutation) => {
-  const res = await f(`${process.env.API_URL}/graphql`, {
+  const res = await f(`${API_URL}/graphql`, {
     method: 'POST',
     headers: await getAuthHeaders(),
     body: `{ "query": "${isMutation ? 'mutation' : ''} { ${query

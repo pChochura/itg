@@ -14,8 +14,8 @@ const showHelp = () => {
     After creating issue you will be switched to the newly created branch.
     Keep in mind that this branch automatically will be pushed.
 
-    Usage:  ${process.env.LIB_NAME} issue|i [-h] <name> [-b|-c <label>] [--from <issue|'master'>] [-d]
-          \t${process.env.LIB_NAME} issue|i open <issue>
+    Usage:  itg issue|i [-h] <name> [-b|-c <label>] [--from <issue|'master'>] [-d]
+          \titg issue|i open <issue>
     Options:
     \t-h, --help, -help, h, help, ?   displays this help message
     \t-b, --bug                       sets 'bug' label to the newly created issue
