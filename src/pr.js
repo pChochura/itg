@@ -184,8 +184,9 @@ const runCommands = async (options) => {
 	const issue = await api.getIssue(issueNumber, true);
 
 	sh.echo(
-		`Creating Pull Request for issue #${issueNumber} "${issue.title}", labeled: "${
-			issue.labels.map((label) => label.name).join(', ')}"`
+		`Creating Pull Request for issue #${issueNumber} "${
+			issue.title
+		}", labeled: "${issue.labels.map((label) => label.name).join(', ')}"`
 			.replace(/\n/, ' ')
 			.replace(/(  )+/g, ''),
 	);

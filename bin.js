@@ -25,12 +25,14 @@ const run = async () => {
 	}
 
 	if (['--disable-warning'].indexOf(args[0]) !== -1) {
-		sh.echo(`
+		sh.echo(
+			`
 		Warnings now are disabled. To enable them again, just type:
 		  itg --enable-warning
 			
 		Now you can create issues without 'issue|i' prefix.
-		`.trimIndent());
+		`.trimIndent(),
+		);
 
 		await cache.set('WARNING', false);
 
@@ -38,10 +40,12 @@ const run = async () => {
 	}
 
 	if (['--enable-warning'].indexOf(args[0]) !== -1) {
-		sh.echo(`
+		sh.echo(
+			`
 		Warnings now are enabled. To disable them again, just type:
 		  itg --disable-warning
-		`.trimIndent());
+		`.trimIndent(),
+		);
 
 		await cache.set('WARNING', true);
 
@@ -89,13 +93,15 @@ const run = async () => {
 	}
 
 	// Propably user just don't know what to do
-	sh.echo(`
+	sh.echo(
+		`
 	To create an issue without 'issue|i' prefix, just remember to put the title as a first parameter and surround it with quotes.
 	If you want to disable this behavior, just type:
 	  itg --disable-warning
 
 	And then you will be able to create issues without this limitation.
-	`.trimIndent());
+	`.trimIndent(),
+	);
 	sh.exit(1);
 };
 
