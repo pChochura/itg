@@ -1,6 +1,6 @@
 {
   "name": "itg",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Issue Tracker for Github",
   "main": "bin.js",
   "bin": "./bin.js",
@@ -40,7 +40,7 @@
     "src/utils.js",
     "src/cache.js",
     "src/api/api.js",
-    "src/api/grapql.js",
+    "src/api/graphql.js",
     "src/api/utils.js",
     "README.md"
   ],
