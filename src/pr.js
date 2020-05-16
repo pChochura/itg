@@ -15,14 +15,14 @@ const showHelp = () => {
 		        itg pull-request|pr open [<issue>]
 		        itg pull-request|pr ready [<issue>]
 		Options:
-		  -h, --help, -help, h, help, ?   - displays this help message
-		  -d, --draft                     - marks newly created Pull Request as a draft
-		  -m, --master                    - switches you to the master branch after creating a Pull Request
-		  -p, --push                      - push changes before creating a Pull Request
-		  -s, --show                      - opens a website with PR after creating one
-		  --to <issue number>             - allows to choose a branch to be merged to by selecting an issue
-		  open [<issue number>]           - opens a webiste with PR associated with the current (or selected) issue
-		  ready [<issue number>]          - marks existing pull request associated with the current (or selected) issue as ready for review
+		  -h, --help, -help, h, help, ?  displays this help message
+		  -d, --draft                    marks newly created Pull Request as a draft
+		  -m, --master                   switches you to the master branch after creating a Pull Request
+		  -p, --push                     push changes before creating a Pull Request
+		  -s, --show                     opens a website with PR after creating one
+		  --to <issue number>            allows to choose a branch to be merged to by selecting an issue
+		  open [<issue number>]          opens a webiste with PR associated with the current (or selected) issue
+		  ready [<issue number>]         marks existing pull request associated with the current (or selected) issue as ready for review
 		`.trimIndent(),
 	);
 	sh.exit(0);
@@ -184,8 +184,9 @@ const runCommands = async (options) => {
 	const issue = await api.getIssue(issueNumber, true);
 
 	sh.echo(
-		`Creating Pull Request for issue #${issueNumber} "${issue.title}",
-		labeled: "${issue.labels.map((label) => label.name).join(', ')}"`
+		`Creating Pull Request for issue #${issueNumber} "${
+			issue.title
+		}", labeled: "${issue.labels.map((label) => label.name).join(', ')}"`
 			.replace(/\n/, ' ')
 			.replace(/(  )+/g, ''),
 	);
