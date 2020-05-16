@@ -7,6 +7,7 @@ const API_URL = 'https://api.github.com';
 
 const askForCredentials = async () => {
 	return new Promise((resolve, _) => {
+		sh.echo('Login into your Github account (your credentials are never stored)');
 		read({ prompt: 'Username: ', silent: false }, (error, username) => {
 			if (error) {
 				sh.echo('You have to login into your Github account to continue');
