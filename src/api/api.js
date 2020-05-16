@@ -1,4 +1,3 @@
-require('dotenv').config();
 const graphql = require('./graphql');
 const sh = require('shelljs');
 const cache = require('../cache');
