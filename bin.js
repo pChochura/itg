@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-require('dotenv').config();
+const cache = require('./src/cache');
 const issue = require('./src/issue');
 const pr = require('./src/pr');
 const sh = require('shelljs');
+const fs = require('fs');
 
 sh.config.silent = true;
 
@@ -17,6 +18,61 @@ if (!sh.which('git')) {
 const run = async () => {
 	const args = process.argv.slice(2);
 
+	if (['--version', '-v'].indexOf(args[0]) !== -1) {
+		const packageJson = JSON.parse(fs.readFileSync('package.json'));
+		sh.echo(packageJson.version);
+		sh.exit(0);
+	}
+
+	if (['--disable-warning'].indexOf(args[0]) !== -1) {
+		sh.echo(`
+		Warnings now are disabled. To enable them again, just type:
+		  itg --enable-warning
+			
+		Now you can create issues without 'issue|i' prefix.
+		`.trimIndent());
+
+		await cache.set('WARNING', false);
+
+		sh.exit(0);
+	}
+
+	if (['--enable-warning'].indexOf(args[0]) !== -1) {
+		sh.echo(`
+		Warnings now are enabled. To disable them again, just type:
+		  itg --disable-warning
+		`.trimIndent());
+
+		await cache.set('WARNING', true);
+
+		sh.exit(0);
+	}
+
+	if (['-h', '-help', '--help', 'help', '?'].indexOf(args[0]) !== -1) {
+		// User needs help!!
+		sh.echo(
+			`
+			It's a simple script to help you manage Github Issues and Pull Requests.
+		
+			Usage:  itg [-h] [-v] [--disable-warning] [--enable-warning]
+			        itg [issue|i] [OPTIONS]
+							itg pull-request|pr [OPTIONS]
+			Options:
+			  -h, --help, -help, h, help, ?  displays this help message
+			  -v, --version                  shows current version of this script
+			  --disable-warning              disable warning showing when creating an issue omitting
+				                                   'issue|i' prefix and qoutes around the title
+			  --enable-warning               enables warning showing when creating an issue omitting
+				                                   'issue|i' prefix and qoutes around the title; default
+			  issue, i                       manages Issues; can be omitted
+			  pull-request, pr               manages Pull Requests
+			
+			Scripts with omitted 'issue|i' prefix will be interpreted as if it was there.
+		`.trimIndent(),
+		);
+		sh.exit(0);
+	}
+
 	if (['issue', 'i'].indexOf(args[0]) !== -1) {
 		await issue(args.slice(1));
 		sh.exit(0);
@@ -27,19 +83,20 @@ const run = async () => {
 		sh.exit(0);
 	}
 
-	// User must have typed something wrong
-	sh.echo(
-		`
-		We've got a problem...
-	
-		The correct usage of this command is:
-		  itg issue|i [OPTIONS]
-		  itg pull-request|pr [OPTIONS]
-		
-		If you want help with OPTIONS, just type 'help' instead of OPTIONS.
-		Have fun!
-	`.trimIndent(),
-	);
+	if ((args[0] || '').indexOf('"') !== -1 || !(await cache.get('WARNING'))) {
+		await issue(args);
+		sh.exit(0);
+	}
+
+	// Propably user just don't know what to do
+	sh.echo(`
+	To create an issue without 'issue|i' prefix, just remember to put the title as a first parameter and surround it with quotes.
+	If you want to disable this behavior, just type:
+	  itg --disable-warning
+
+	And then you will be able to create issues without this limitation.
+	`.trimIndent());
+	sh.exit(1);
 };
 
 run();

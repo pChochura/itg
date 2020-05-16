@@ -14,8 +14,8 @@ const showHelp = () => {
 		After creating issue you will be switched to the newly created branch.
 		Keep in mind that this branch automatically will be pushed.
 
-		Usage:  itg issue|i [-h] <name> [-b|-c <label>] [--from <issue|'master'>] [-d]
-		        itg issue|i open <issue>
+		Usage:  itg [issue|i] [-h] <name> [-b|-c <label>] [--from <issue|'master'>] [-d]
+		        itg [issue|i] open <issue>
 		Options:
 		  -h, --help, -help, h, help, ?   displays this help message
 		  -b, --bug                       sets 'bug' label to the newly created issue
@@ -23,6 +23,8 @@ const showHelp = () => {
 		  --from <issue number|'master'>  allows to choose a base branch by selecting base issue
 		  -d, --detached                  allows to create an issue without switching to the created branch
 		  open <issue number>             changes branch to the one associated with the given issue and assignes it to you
+
+		Prefix 'issue|i' can be omitted.
   `.trimIndent(),
 	);
 	sh.exit(0);
