@@ -1,6 +1,7 @@
 const api = require('./api/api');
 const sh = require('shelljs');
 const utils = require('./utils');
+const browser = require('open');
 
 sh.config.silent = true;
 
@@ -229,7 +230,7 @@ const runCommands = async (options) => {
 	// Opening webiste if option '--show' was set
 	if (options.show) {
 		sh.echo('Opening a website with this PR');
-		sh.exec(`xdg-open ${pullRequest.url}`);
+		await browser(pullRequest.url, { wait: true });
 	}
 
 	// Switching to 'master' branch if option '--master' was set
@@ -279,14 +280,14 @@ const runReady = async (ready) => {
 const runOpen = async (open) => {
 	sh.echo(`Opening a website with PR associated with branch "${open}"`);
 
-	const pr = await api.getPullRequest(open);
+	const pullRequest = await api.getPullRequest(open);
 
-	if (!pr) {
-		sh.echo(`There are no Pull Request associated with this branch`);
+	if (!pullRequest) {
+		sh.echo(`There are no Pull Requests associated with this branch`);
 		sh.exit(1);
 	}
 
-	sh.exec(`xdg-open ${pr.url}`);
+	await browser(pullRequest.url, { wait: true });
 	sh.exit(0);
 };
 
