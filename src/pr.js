@@ -1,5 +1,5 @@
 const api = require('./api/api');
-const sh = require('shelljs');
+const sh = require('./shell');
 const utils = require('./utils');
 const browser = require('open');
 

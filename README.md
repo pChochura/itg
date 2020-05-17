@@ -26,11 +26,26 @@ npm install -g itg
 
 Keep in mind that this library will only be useful when installed **globally**.
 
+If you want to see help, please type:
+
+```bash
+itg ?
+```
+
+Synposis:
+
+```bash
+itg [-v] [-h] [--disable-warning] [--enable-warning]
+itg [issue|i] [OPTIONS]
+itg pull-request|pr [OPTIONS]
+```
+
 #### But what for?
 
 It's a collection of methods to help organize and navigate through more complex repositories. It's based on **git** and its API. Github provides us with methods to create issues or pull requests, but they are not standardized. And multiple styles of branch names, issues without labels or pull requests not closing corresponding issues are something you want to avoid while working with team.
 
 At first it was created to help my team organize our first "bigger" project. But I wrote it as a shell script and then I found out that they are not able to use it (#windows-team) so I wrote .bat files... And suddenly every change I want to make requires me to update both .sh and .bat files (you can find them [here](https://github.com/Pawelek99/itg/tree/master/shell)). So... I discovered this great library [shelljs](https://github.com/shelljs/shelljs) which helped me with my problem. And then I created **itg** - js library to manage issues and pull request on github.
+But after a while I discorvered that I'm using only small portion of that library (`exec` method), so I wrote it myself.
 
 ---
 
@@ -185,11 +200,26 @@ npm install -g itg
 
 Pamiętaj o tym, że ta biblioteka będzie użyteczna jedynie zainstalowana globalnie.
 
+Jeśli chcesz zobaczyć pomoc, wpisz:
+
+```bash
+itg ?
+```
+
+Streszczenie:
+
+```bash
+itg [-v] [-h] [--disable-warning] [--enable-warning]
+itg [issue|i] [OPTIONS]
+itg pull-request|pr [OPTIONS]
+```
+
 #### Ale po co to?
 
 Jest to zbiór metod pozwalających zorganizować bardziej złożone repozytoria i nawigować w nich. Bilbioteka bazuje na **git** oraz na API Githuba. Github udostępnia metody, dzięki którym można tworzyć zadania lub pull requesty, natomiast nie są one ustandaryzowane. A wiele różnych styli naz gałęzi, zadania bez etykiet czy pull requesty nie zamykające tyczących się ich zadań to jest coś, co najlepiej unikać w pracy w zespole.
 
 Na początku stworzyłem to do pomocy mojemu zespołowi w organizacji naszego pierwszego "większego" projektu. Ale napisałem wtedy skrypt shella i dowiedziałem się, że pozostali nie są w stanie go używać (#windows-team), dlatego napisałem również skrypty .bat... I nagle każda zmiana, którą muszę wprowadzić wymagała ode mnie edycji obu tych plików (można je znaleźć [tutaj](https://github.com/Pawelek99/itg/tree/master/shell)). Więc... udało mi się odkryć świetną bibliotekę [shelljs](https://github.com/shelljs/shelljs), która pomogła mi rozwiązać ten problem. Wtedy właśnie stworzyłem **itg** - bibliotekę w js do zarządzania zadaniami i pull requestami na Githubie.
+Ale po chwili odkryłem, że korzystam tylko z niewielkiej części tej biblioteki (metody `exec` głównie)... Więc napisałem własną.
 
 ---
 

@@ -1,5 +1,5 @@
 const gitRootDir = require('git-root-dir');
-const sh = require('shelljs');
+const sh = require('./shell');
 const fs = require('fs');
 const cache = new Map();
 let loaded = false;

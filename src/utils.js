@@ -1,4 +1,4 @@
-const sh = require('shelljs');
+const sh = require('./shell');
 const api = require('./api/api');
 
 sh.config.silent = true;
