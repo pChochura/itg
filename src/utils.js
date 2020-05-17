@@ -1,8 +1,6 @@
 const sh = require('./shell');
 const api = require('./api/api');
 
-sh.config.silent = true;
-
 String.prototype.trimIndent = function () {
 	return this.replace(/\n(\t)*/g, '\n');
 };

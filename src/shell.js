@@ -17,7 +17,7 @@ const exec = (query) => {
 
 const which = (command) => {
 	return exec(`which ${command}`).code === 0;
-}
+};
 
 const echo = (query) => {
 	console.log(query);
@@ -25,7 +25,7 @@ const echo = (query) => {
 
 const exit = (code) => {
 	process.exit(code);
-}
+};
 
 module.exports = {
 	exec,

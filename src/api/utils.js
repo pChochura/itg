@@ -1,6 +1,6 @@
 const fs = require('fs');
 const os = require('os');
-const sh = require('./shell');
+const sh = require('../shell');
 const f = require('node-fetch');
 const read = require('read');
 
