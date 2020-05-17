@@ -1,5 +1,6 @@
 const fs = require('fs');
 const os = require('os');
+const sh = require('shelljs');
 const f = require('node-fetch');
 const read = require('read');
 
@@ -42,7 +43,7 @@ const auth = async () => {
 		},
 		body: JSON.stringify({
 			scopes: ['repo', 'user'],
-			note: 'Token for "itg"',
+			note: `itg for ${os.userInfo().username}@${os.hostname()}`,
 		}),
 	});
 	return res.json();
@@ -60,9 +61,13 @@ const getToken = () => {
 };
 
 const setToken = async (token) => {
-	const path = `${os.homedir()}/.itg/.secret`;
+	const path = `${os.homedir()}/.itg`;
 
-	fs.writeFileSync(path, Buffer.from(token).toString('base64'));
+	if (!fs.existsSync(path)) {
+		fs.mkdirSync(path);
+	}
+
+	fs.writeFileSync(`${path}/.secret`, Buffer.from(token).toString('base64'));
 };
 
 const getAuthHeaders = async () => {

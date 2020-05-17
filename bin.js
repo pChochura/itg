@@ -34,7 +34,7 @@ const run = async () => {
 		`.trimIndent(),
 		);
 
-		await cache.set('WARNING', false);
+		await cache.set('WARNING_DISABLED', false);
 
 		sh.exit(0);
 	}
@@ -47,7 +47,7 @@ const run = async () => {
 		`.trimIndent(),
 		);
 
-		await cache.set('WARNING', true);
+		await cache.set('WARNING_DISABLED', true);
 
 		sh.exit(0);
 	}
@@ -57,7 +57,7 @@ const run = async () => {
 		sh.echo(
 			`
 			It's a simple script to help you manage Github Issues and Pull Requests.
-		
+
 			Usage:  itg [-h] [-v] [--disable-warning] [--enable-warning]
 			        itg [issue|i] [OPTIONS]
 							itg pull-request|pr [OPTIONS]
@@ -65,12 +65,12 @@ const run = async () => {
 			  -h, --help, -help, h, help, ?  displays this help message
 			  -v, --version                  shows current version of this script
 			  --disable-warning              disable warning showing when creating an issue omitting
-				                                   'issue|i' prefix and qoutes around the title
+			                                  'issue|i' prefix and qoutes around the title
 			  --enable-warning               enables warning showing when creating an issue omitting
-				                                   'issue|i' prefix and qoutes around the title; default
+			                                   'issue|i' prefix and qoutes around the title; default
 			  issue, i                       manages Issues; can be omitted
 			  pull-request, pr               manages Pull Requests
-			
+
 			Scripts with omitted 'issue|i' prefix will be interpreted as if it was there.
 		`.trimIndent(),
 		);
@@ -87,7 +87,7 @@ const run = async () => {
 		sh.exit(0);
 	}
 
-	if ((args[0] || '').indexOf('"') !== -1 || !(await cache.get('WARNING'))) {
+	if ((args[0] || '').indexOf('"') !== -1 || await cache.get('WARNING_DISABLED')) {
 		await issue(args);
 		sh.exit(0);
 	}
