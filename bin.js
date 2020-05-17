@@ -87,7 +87,10 @@ const run = async () => {
 		sh.exit(0);
 	}
 
-	if ((args[0] || '').indexOf('"') !== -1 || await cache.get('WARNING_DISABLED')) {
+	if (
+		(args[0] || '').indexOf('"') !== -1 ||
+		(await cache.get('WARNING_DISABLED'))
+	) {
 		await issue(args);
 		sh.exit(0);
 	}
