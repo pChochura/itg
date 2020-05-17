@@ -3,8 +3,6 @@ const sh = require('./shell');
 const utils = require('./utils');
 const browser = require('open');
 
-sh.config.silent = true;
-
 const showHelp = () => {
 	sh.echo(
 		`

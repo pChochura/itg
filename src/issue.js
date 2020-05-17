@@ -2,8 +2,6 @@ const utils = require('./utils');
 const api = require('./api/api');
 const sh = require('./shell');
 
-sh.config.silent = true;
-
 const showHelp = () => {
 	sh.echo(
 		`
