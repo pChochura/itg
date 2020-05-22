@@ -44,7 +44,7 @@
     "src/shell.js",
     "src/api/utils.js",
     "src/api/index.js",
-    "src/extensions,js",
+    "src/extensions.js",
     "src/api/graphql.js"
   ],
   "prettier": {
