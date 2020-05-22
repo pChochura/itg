@@ -1,4 +1,4 @@
-require('./utils');
+require('./extensions');
 const child = require('child_process');
 
 const exec = (query) => {

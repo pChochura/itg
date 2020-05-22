@@ -1,3 +1,4 @@
+require('./extensions');
 const utils = require('./utils');
 const api = require('./api/api');
 const sh = require('./shell');
