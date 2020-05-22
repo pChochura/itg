@@ -4,7 +4,6 @@ const cache = require('./src/cache');
 const issue = require('./src/issue');
 const sh = require('./src/shell');
 const pr = require('./src/pr');
-const fs = require('fs');
 
 if (!sh.which('git')) {
 	sh.echo(
@@ -17,8 +16,7 @@ const run = async () => {
 	const args = process.argv.slice(2);
 
 	if (['--version', '-v'].indexOf(args[0]) !== -1) {
-		const packageJson = JSON.parse(fs.readFileSync('package.json'));
-		sh.echo(packageJson.version);
+		sh.echo(require('./info.json').version);
 		sh.exit(0);
 	}
 

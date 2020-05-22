@@ -8,7 +8,7 @@
     "format": "prettier --write '**/*.js'",
     "format:check": "prettier --check '**/*.js'",
     "test": "jest",
-    "prepublishOnly": "npm run format:check && npm run test"
+    "prepublishOnly": "npm run format:check && npm run test && node saveInfo.js"
   },
   "repository": {
     "type": "git",
@@ -35,14 +35,14 @@
   },
   "files": [
     "bin.js",
+    "info.json",
     "src/issue.js",
     "src/pr.js",
     "src/utils.js",
     "src/cache.js",
     "src/api/api.js",
     "src/api/graphql.js",
-    "src/api/utils.js",
-    "README.md"
+    "src/api/utils.js"
   ],
   "prettier": {
     "trailingComma": "all",
