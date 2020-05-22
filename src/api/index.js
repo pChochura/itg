@@ -119,9 +119,24 @@ const methods = {
 		const issue = await graphql.mutation(`updateIssue(input: {
       id: "${id}"${body ? `, body: "${body}"` : ''}${
 			assignee ? `, assigneeIds: "${assignee}"` : ''
-		}
+		}, state: "OPEN"
     }) { issue { id url number } }`);
 		return issue.fromPath('data', 'updateIssue', 'issue');
+	},
+
+	closeIssue: async (id, reason) => {
+		await graphql.mutation(
+			`closeIssue(input: { issueId: "${id}" }) { issue { id url number } }`,
+		);
+
+		return methods.commentIssue(id, reason);
+	},
+
+	commentIssue: async (id, comment) => {
+		const issue = await graphql.mutation(
+			`addComment(input: { subjectId: "${id}", body: "${comment}" }) { commentEdge { node { issue { id url number } } } }`,
+		);
+		return issue.fromPath('data', 'closeIssue', 'issue');
 	},
 
 	createPullRequest: async (issue, options) => {

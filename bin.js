@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const cache = require('./src/cache');
+const config = require('./src/config');
 const issue = require('./src/issue');
 const sh = require('./src/shell');
 const pr = require('./src/pr');
@@ -30,7 +30,7 @@ const run = async () => {
 		`.trimIndent(),
 		);
 
-		await cache.set('WARNING_DISABLED', true);
+		config.setWarningDisabled();
 
 		sh.exit(0);
 	}
@@ -43,7 +43,7 @@ const run = async () => {
 		`.trimIndent(),
 		);
 
-		await cache.set('WARNING_DISABLED', false);
+		config.setWarningDisabled(false);
 
 		sh.exit(0);
 	}
@@ -83,10 +83,7 @@ const run = async () => {
 		sh.exit(0);
 	}
 
-	if (
-		(args[0] || '').indexOf('"') !== -1 ||
-		(await cache.get('WARNING_DISABLED'))
-	) {
+	if ((args[0] || '').indexOf('"') !== -1 || config.isWarningDsiabled()) {
 		await issue(args);
 		sh.exit(0);
 	}

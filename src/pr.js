@@ -1,5 +1,5 @@
 require('./extensions');
-const api = require('./api/api');
+const api = require('./api');
 const sh = require('./shell');
 const utils = require('./utils');
 const browser = require('open');
