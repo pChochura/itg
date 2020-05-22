@@ -3,7 +3,7 @@ const child = require('child_process');
 
 const exec = (query) => {
 	try {
-		const stdout = child.execSync(query, { stdio: "pipe" }).toLocaleString();
+		const stdout = child.execSync(query, { stdio: 'pipe' }).toLocaleString();
 		return {
 			stdout: stdout.trimEndline(),
 			code: 0,
