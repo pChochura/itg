@@ -27,7 +27,6 @@ const saveConfig = () => {
 
 const isWarningDsiabled = () => {
 	loadConfig();
-	console.log(config);
 
 	return config.warningDisabled;
 };
