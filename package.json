@@ -42,7 +42,7 @@
     "src/cache.js",
     "src/config.js",
     "src/shell.js",
-    "src/api/utils.js"
+    "src/api/utils.js",
     "src/api/index.js",
     "src/extensions,js",
     "src/api/graphql.js"
