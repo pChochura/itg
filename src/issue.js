@@ -1,3 +1,4 @@
+require('./extensions');
 const utils = require('./utils');
 const api = require('./api/api');
 const sh = require('./shell');
@@ -130,15 +131,6 @@ const validateCustom = async (custom) => {
 	if (!custom) {
 		sh.echo('You have to pass a label');
 		sh.exit(1);
-	}
-
-	if (['bug', 'feature'].indexOf(custom) !== -1) {
-		sh.echo(
-			`Warning!
-      Passing "bug" or "feature" to the "custom" option slows down the process. 
-      Try using "--bug" option and keep in mind - "feature" label is the default.
-    `.trimIndent(),
-		);
 	}
 
 	// Download labels from Github repo

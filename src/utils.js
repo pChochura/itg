@@ -1,19 +1,5 @@
+require('./extensions');
 const sh = require('./shell');
-const api = require('./api/api');
-
-String.prototype.trimIndent = function () {
-	return this.replace(/\n(\t)*/g, '\n');
-};
-
-String.prototype.trimEndline = function () {
-	return this.replace(/\n$/, '');
-};
-
-Array.prototype.asyncForEach = async function (callback) {
-	for (let index = 0; index < this.length; index++) {
-		await callback(this[index], index, this);
-	}
-};
 
 const slugify = (input) => {
 	return input
@@ -30,6 +16,7 @@ const validateNumber = (number) => {
 };
 
 const getBranchNameFromNumber = async (issueNumber) => {
+	const api = require('./api/api');
 	const issue = await api.getIssue(issueNumber);
 
 	if (!issue) {
@@ -76,6 +63,7 @@ const getNumberFromLink = (link) => {
 };
 
 const getBranchLink = async (branch) => {
+	const api = require('./api/api');
 	const repoLink = (await api.getRepo()).url;
 	return `${repoLink}/tree/${branch}`;
 };
