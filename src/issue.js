@@ -132,15 +132,6 @@ const validateCustom = async (custom) => {
 		sh.exit(1);
 	}
 
-	if (['bug', 'feature'].indexOf(custom) !== -1) {
-		sh.echo(
-			`Warning!
-      Passing "bug" or "feature" to the "custom" option slows down the process. 
-      Try using "--bug" option and keep in mind - "feature" label is the default.
-    `.trimIndent(),
-		);
-	}
-
 	// Download labels from Github repo
 	const labels = (await api.getLabels()).map((label) => label.name);
 

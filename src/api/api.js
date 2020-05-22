@@ -100,7 +100,12 @@ const methods = {
 		const repo = await methods.getRepo();
 		const labelsIds = [];
 		await labels.split(',').asyncForEach(async (label) => {
-			labelsIds.push((await methods.getLabel(label)).id);
+			let downloadedLabel = await methods.getLabel(label);
+			if (!downloadedLabel) {
+				sh.echo("Please provide existing label via '--custom' option");
+				sh.exit(1);
+			}
+			labelsIds.push(downloadedLabel.id);
 		});
 		const issue = await graphql.mutation(`createIssue(input: {
       repositoryId: "${repo.id}", title: "${title}"${
