@@ -1,6 +1,6 @@
 {
   "name": "itg",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Issue Tracker for Github",
   "main": "bin.js",
   "bin": "./bin.js",
@@ -40,9 +40,12 @@
     "src/pr.js",
     "src/utils.js",
     "src/cache.js",
-    "src/api/api.js",
-    "src/api/graphql.js",
+    "src/config.js",
+    "src/shell.js",
     "src/api/utils.js"
+    "src/api/index.js",
+    "src/extensions,js",
+    "src/api/graphql.js",
   ],
   "prettier": {
     "trailingComma": "all",
