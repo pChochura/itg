@@ -54,10 +54,11 @@ But after a while I discorvered that I'm using only small portion of that librar
 ### Creating a new issue
 
 ```bash
-itg i|issue [-h|--help|h|help|?]
-itg i|issue <name> [-b][--from <issue|'master'>][-d]
-itg i|issue <name> [-c <label>][--from <issue|'master'>][-d]
-itg i|issue open <issue>
+itg [i|issue] [-h|--help|h|help|?]
+itg [i|issue] <name> [-b][--from <issue|'master'>][-d]
+itg [i|issue] <name> [-c <label>][--from <issue|'master'>][-d]
+itg [i|issue] open <issue>
+itg [i|issue] close [<'wont-do'|'done'>]
 ```
 
 > Command **i** is used as a synonym of **issue**. Both can be used interchangeably.
@@ -66,43 +67,50 @@ This script creates a new issue with the given **&lt;name>**, publishes it on th
 Sample usages:
 
 - ```bash
-  itg i|issue "My first issue"
+  itg [i|issue] "My first issue"
   ```
   It will create a branch named **my-first-issue-i1** (on the assumption that it is the first issue, otherwise the number **1** will be replaced with the correct one).
   Created issue will be labeled **feature** and assigned to you. Additionally the description of the issue will be populated as follows:
   > Associated branch: [my-first-issue-i1](http://link_to_website_with_branch)
 - ```bash
-  itg i|issue "My first issue" -b
-  itg i|issue "My first issue" --bug
+  itg [i|issue] "My first issue" -b
+  itg [i|issue] "My first issue" --bug
   ```
   It will create an issue as above except this time the label will be set to **bug**.
 - ```bash
-  itg i|issue "My first issue" -c question
-  itg i|issue "My first issue" --custom "help wanted"
+  itg [i|issue] "My first issue" -c question
+  itg [i|issue] "My first issue" --custom "help wanted"
   ```
   It will create an issue as above except this time the label will be set to **question** or **help wanted** respectively. Keep in mind that the provided label has to exist in the labels list on Github repo.
 - ```bash
-  itg i|issue "My first issue" --from master
-  itg i|issue "My first issue" --from 2
+  itg [i|issue] "My first issue" --from master
+  itg [i|issue] "My first issue" --from 2
   ```
   Depending on what is provided as **--from** parameter, the branch will be created based on the **master** branch or the branch associated with the given issue (in this example we used the number **2** thus the branch associated with the issue with id **#2** will be used as a base).
 - ```bash
-  itg i|issue "My first issue" -d
-  itg i|issue "My first issue" --detached
+  itg [i|issue] "My first issue" -d
+  itg [i|issue] "My first issue" --detached
   ```
   This command creates an independent issue. It means that it won't be assigned to anyone and corresponding branch will be only created remotely.
 - ```bash
-  itg i|issue "My first issue" -c "help wanted" --from master
-  itg i|issue --bug --from 31 "My first issue"
-  itg i|issue --custom question "My first issue" --from 23
-  itg i|issue -d "My first issue" -b
-  itg i|issue "My first issue" --detached -c improvement
+  itg [i|issue] "My first issue" -c "help wanted" --from master
+  itg [i|issue] --bug --from 31 "My first issue"
+  itg [i|issue] --custom question "My first issue" --from 23
+  itg [i|issue] -d "My first issue" -b
+  itg [i|issue] "My first issue" --detached -c improvement
   ```
   All of the above commands are correct. Order of the options is irrelevant. For every option there is its longer form, for instance **-b** and **--bug**. But for the option **--from** there is no abbreviation.
 - ```bash
-  itg i|issue open 2
+  itg [i|issue] open 2
   ```
   This command will pull remote branch associated with the given issue and it will assign this issue it to you.
+- ```bash
+  itg [i|issue] close wont-do
+  itg [i|issue] close done
+  itg [i|issue] close "My custom comment after closing issue"
+  itg [i|issue] close
+  ```
+  This command will close current issue and comment it with 'Closing issue. It won't be done.' or 'Closing issue. It has been done already.' when provided 'wont-do' or 'done' accordingly (or your custom comment will be posted). After that you will be switched to a master branch.
 - ```bash
   itg i|issue ?
   itg i|issue h
@@ -118,7 +126,7 @@ Sample usages:
 
 ```bash
 itg pr|pull-request [-h|--help|h|help|?]
-itg pr|pull-request [-d][-m][-p][--to <issue>]
+itg pr|pull-request [-d][-m][-p][-s][--to <issue>]
 itg pr|pull-request open [<issue>]
 itg pr|pull-request ready [<issue>]
 ```
@@ -228,10 +236,11 @@ Ale po chwili odkryłem, że korzystam tylko z niewielkiej części tej bibliote
 ### Tworzenie nowego zadania (issue)
 
 ```bash
-itg i|issue [-h|--help|h|help|?]
-itg i|issue <name> [-b][--from <issue|'master'>][-d]
-itg i|issue <name> [-c <label>][--from <issue|'master'>][-d]
-itg i|issue open <issue>
+itg [i|issue] [-h|--help|h|help|?]
+itg [i|issue] <name> [-b][--from <issue|'master'>][-d]
+itg [i|issue] <name> [-c <label>][--from <issue|'master'>][-d]
+itg [i|issue] open <issue>
+itg [i|issue] close [<'wont-do'|'done'>]
 ```
 
 > Komenda **i** jest używana jako synonim **issue**. Można używać ich zamiennie.
@@ -240,43 +249,50 @@ Skrypt utworzy nowe zadanie o podanej nazwie **&lt;name>**, udostępni je na str
 Przykładowe użycia skryptu:
 
 - ```bash
-  itg i|issue "Moje pierwsze zadanie"
+  itg [i|issue] "Moje pierwsze zadanie"
   ```
   Spowoduje on utworzenie gałęzi o nazwie **moje-pierwsze-zadanie-i1** (przy założeniu, że to będzie pierwsze zadanie na stronie Github. W innym wypadku liczba **1** zostanie zastąpiona numerem zadania).
   Zadanie to zostanie oznaczone etykietą **feature**, przypisane do Ciebie oraz w opisie tego zadania zostanie umieszczony tekst:
   > Associated branch: [moje-pierwsze-zadanie-i1](http://link_do_strony_z_gałęzią)
 - ```bash
-  itg i|issue "Moje pierwsze zadanie" -b
-  itg i|issue "Moje pierwsze zadanie" --bug
+  itg [i|issue] "Moje pierwsze zadanie" -b
+  itg [i|issue] "Moje pierwsze zadanie" --bug
   ```
   Zostanie wykonane to, co powyżej z wyjątkiem ustawienia etykiety. Po użyciu tej komendy, zostanie ona ustawiona na **bug**.
 - ```bash
-  itg i|issue "Moje pierwsze zadanie" -c question
-  itg i|issue "Moje pierwsze zadanie" --custom "help wanted"
+  itg [i|issue] "Moje pierwsze zadanie" -c question
+  itg [i|issue] "Moje pierwsze zadanie" --custom "help wanted"
   ```
   Zostanie wykonane to, co powyżej z wyjątkiem ustawienia etykiety. Po użyciu tej komendy, zostanie ona ustawiona na **question** lub **help wanted**, w zależności od wprowadzonej nazwy. Należy pamiętać, że dostępne nazwy etykiet to te, które znajdują się w liście etykiet dla repozytorium na stronie Github.
 - ```bash
-  itg i|issue "Moje pierwsze zadanie" --from master
-  itg i|issue "Moje pierwsze zadanie" --from 2
+  itg [i|issue] "Moje pierwsze zadanie" --from master
+  itg [i|issue] "Moje pierwsze zadanie" --from 2
   ```
   W zależności od tego, co zostanie podane jako paramatr dla opcji **--from**, to gałąź zostanie stworzona bazując na gałęzi **master** (jeżeli taka zostanie podana) lub na gałęzi wskazanej przez zadanie z podanym numerem (w przykładzie został użyty numer **2**, to skrypt pobierze informacje na temat tego, jaką gałąź wskazuje to zadanie i użyje ją jako podstawową).
 - ```bash
-  itg i|issue "Moje pierwsze zadanie" -d
-  itg i|issue "Moje pierwsze zadanie" --detached
+  itg [i|issue] "Moje pierwsze zadanie" -d
+  itg [i|issue] "Moje pierwsze zadanie" --detached
   ```
   Użycie tej komendy spowoduje stworzenie zadania, które będzie niezależne. Gałąź do niego zostanie jedynie stworzona na Github i nie zostanie ono do nikogo przypisane.
 - ```bash
-  itg i|issue "Moje pierwsze zadanie" -c "help wanted" --from master
-  itg i|issue --bug --from 31 "Moje pierwsze zadanie"
-  itg i|issue --custom question "Moje pierwsze zadanie" --from 23
-  itg i|issue -d "Moje pierwsze zadanie" -b
-  itg i|issue "Moje pierwsze zadanie" --detached -c improvement
+  itg [i|issue] "Moje pierwsze zadanie" -c "help wanted" --from master
+  itg [i|issue] --bug --from 31 "Moje pierwsze zadanie"
+  itg [i|issue] --custom question "Moje pierwsze zadanie" --from 23
+  itg [i|issue] -d "Moje pierwsze zadanie" -b
+  itg [i|issue] "Moje pierwsze zadanie" --detached -c improvement
   ```
   Wszystkie powyższe użycia są poprawne. Kolejność argumentów nie ma znaczenia. Do każdego z argumentu istnieje jego dłuższa forma, np: **-b** i **--bug**. Natomiast dla argumentu **--from** nie istnieje żaden skrót.
 - ```bash
-  itg i|issue open 2
+  itg [i|issue] open 2
   ```
   Powyższa komenda spowoduje pobranie gałęzi związanej z podanym zadaniem oraz przypisanie tego zadania do Ciebie.
+- ```bash
+  itg [i|issue] close wont-do
+  itg [i|issue] close done
+  itg [i|issue] close "Mój komentarz, który zostanie dodany po zamknięciu"
+  itg [i|issue] close
+  ```
+  Powyższa komenda spowoduje zamknięcie danego zadania i dodanie stosownego komentarza - 'Closing issue. It won't be done.' lub 'Closing issue. It has been done already.' w zależności od podanego parametru ( odpowiednio 'wont-do' lub 'done') albo jeżeli zostanie podany niestandardowy komentarz, to ten zostanie opublikowany. Po całym procesie zostaniesz przeniesiony na gałąź master.
 - ```bash
   itg i|issue ?
   itg i|issue h
