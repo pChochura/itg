@@ -1,6 +1,6 @@
 require('./extensions');
 const utils = require('./utils');
-const api = require('./api/api');
+const api = require('./api');
 const sh = require('./shell');
 
 const showHelp = () => {
@@ -14,6 +14,7 @@ const showHelp = () => {
 
 		Usage:  itg [issue|i] [-h] <name> [-b|-c <label>] [--from <issue|'master'>] [-d]
 		        itg [issue|i] open <issue>
+		        itg [issue|i] close [<'wont-do'|'done'>]
 		Options:
 		  -h, --help, -help, h, help, ?   displays this help message
 		  -b, --bug                       sets 'bug' label to the newly created issue
@@ -21,6 +22,9 @@ const showHelp = () => {
 		  --from <issue number|'master'>  allows to choose a base branch by selecting base issue
 		  -d, --detached                  allows to create an issue without switching to the created branch
 		  open <issue number>             changes branch to the one associated with the given issue and assignes it to you
+		  close [<'wont-do'|'done'>]      closes current issue; adds a comment with 'wont-do' or 'done' (default) description accordingly 
+		                                    and switches you to a master branch; if you want to provide a custom comment pass it as a parameter
+		                                    instead of 'wont-do' or 'done'
 
 		Prefix 'issue|i' can be omitted.
   `.trimIndent(),
@@ -52,6 +56,11 @@ const parseArgs = (args) => {
 
 			// Skip checking 'open' parameter
 			i++;
+		} else if (['close'].indexOf(args[i]) !== -1) {
+			options.close = args[i + 1];
+
+			// Skip checking 'close' parameter
+			i++;
 		} else {
 			// Add as not named option (such as issue title)
 			options.title = args[i];
@@ -78,6 +87,20 @@ const validateOptions = async (tempOptions) => {
 		}
 
 		options.open = await validateOpen(tempOptions.open);
+
+		// Return now to avoid checking other options
+		return options;
+	}
+
+	// Validate 'close'
+	if (tempOptions.hasOwnProperty('close')) {
+		// User typed more options than just "close [<'wont-do'|'done'>]"
+		if (Object.keys(tempOptions).length > 1) {
+			sh.echo('You cannot use option "close" with other options');
+			sh.exit(1);
+		}
+
+		options.close = await validateClose(tempOptions.close);
 
 		// Return now to avoid checking other options
 		return options;
@@ -173,9 +196,24 @@ const validateOpen = async (open) => {
 	};
 };
 
+const validateClose = async (close) => {
+	if (close === 'wont-do') {
+		return "Closing issue. It won't be done.";
+	}
+
+	return close === 'done' || !close
+		? 'Closing issue. It has been done already.'
+		: close;
+};
+
 const runCommands = async (options) => {
 	if (options.open) {
 		await runOpen(options.open);
+		sh.exit(0);
+	}
+
+	if (options.close) {
+		await runClose(options.close);
 		sh.exit(0);
 	}
 
@@ -276,6 +314,31 @@ const runOpen = async (open) => {
 	sh.echo(`Assigning issue #${open.number} to you`);
 	const user = await api.getUser();
 	await api.updateIssue(open.id, undefined, user.id);
+
+	sh.exit(0);
+};
+
+const runClose = async (close) => {
+	const issueNumber = utils.getCurrentIssueNumber();
+	sh.echo(`Closing issue #${issueNumber}; reason: "${close}"`);
+
+	const issue = await api.getIssue(issueNumber);
+	await api.closeIssue(issue.id, close);
+
+	const hasUncommitedChanges = sh.exec('git status -s').trimEndline() != '';
+	if (hasUncommitedChanges) {
+		sh.exec('git stash');
+	}
+
+	sh.echo('Checking out "master" branch');
+	sh.exec('git checkout master');
+
+	sh.echo('Pulling changes from "origin master" branch');
+	sh.exec('git pull origin master');
+
+	if (hasUncommitedChanges) {
+		sh.exec('git stash pop');
+	}
 
 	sh.exit(0);
 };

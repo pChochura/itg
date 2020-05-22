@@ -16,7 +16,7 @@ const validateNumber = (number) => {
 };
 
 const getBranchNameFromNumber = async (issueNumber) => {
-	const api = require('./api/api');
+	const api = require('./api');
 	const issue = await api.getIssue(issueNumber);
 
 	if (!issue) {
@@ -63,7 +63,7 @@ const getNumberFromLink = (link) => {
 };
 
 const getBranchLink = async (branch) => {
-	const api = require('./api/api');
+	const api = require('./api');
 	const repoLink = (await api.getRepo()).url;
 	return `${repoLink}/tree/${branch}`;
 };
