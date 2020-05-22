@@ -1,9 +1,7 @@
 const api = require('./api/api');
-const sh = require('shelljs');
+const sh = require('./shell');
 const utils = require('./utils');
 const browser = require('open');
-
-sh.config.silent = true;
 
 const showHelp = () => {
 	sh.echo(
@@ -230,7 +228,7 @@ const runCommands = async (options) => {
 	// Opening webiste if option '--show' was set
 	if (options.show) {
 		sh.echo('Opening a website with this PR');
-		await browser(pullRequest.url, { wait: true });
+		await browser(pullRequest.url);
 	}
 
 	// Switching to 'master' branch if option '--master' was set
@@ -287,7 +285,7 @@ const runOpen = async (open) => {
 		sh.exit(1);
 	}
 
-	await browser(pullRequest.url, { wait: true });
+	await browser(pullRequest.url);
 	sh.exit(0);
 };
 

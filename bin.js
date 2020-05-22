@@ -2,11 +2,9 @@
 
 const cache = require('./src/cache');
 const issue = require('./src/issue');
+const sh = require('./src/shell');
 const pr = require('./src/pr');
-const sh = require('shelljs');
 const fs = require('fs');
-
-sh.config.silent = true;
 
 if (!sh.which('git')) {
 	sh.echo(
@@ -34,7 +32,7 @@ const run = async () => {
 		`.trimIndent(),
 		);
 
-		await cache.set('WARNING_DISABLED', false);
+		await cache.set('WARNING_DISABLED', true);
 
 		sh.exit(0);
 	}
@@ -47,7 +45,7 @@ const run = async () => {
 		`.trimIndent(),
 		);
 
-		await cache.set('WARNING_DISABLED', true);
+		await cache.set('WARNING_DISABLED', false);
 
 		sh.exit(0);
 	}
@@ -60,12 +58,12 @@ const run = async () => {
 
 			Usage:  itg [-h] [-v] [--disable-warning] [--enable-warning]
 			        itg [issue|i] [OPTIONS]
-							itg pull-request|pr [OPTIONS]
+			        itg pull-request|pr [OPTIONS]
 			Options:
 			  -h, --help, -help, h, help, ?  displays this help message
 			  -v, --version                  shows current version of this script
 			  --disable-warning              disable warning showing when creating an issue omitting
-			                                  'issue|i' prefix and qoutes around the title
+			                                   'issue|i' prefix and qoutes around the title
 			  --enable-warning               enables warning showing when creating an issue omitting
 			                                   'issue|i' prefix and qoutes around the title; default
 			  issue, i                       manages Issues; can be omitted

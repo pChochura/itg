@@ -1,5 +1,5 @@
 const graphql = require('./graphql');
-const sh = require('shelljs');
+const sh = require('../shell');
 const cache = require('../cache');
 
 const queryRepo = async (repoQuery) => {
