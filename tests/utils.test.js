@@ -1,4 +1,4 @@
-let utils = require('../src/extensions');
+let utils = require('../src/utils');
 
 test('slugify', () => {
 	expect(utils.slugify('First test for slugify')).toBe(
