@@ -76,7 +76,7 @@ const getNumberFromLink = (link) => {
 };
 
 const getBranchLink = async (branch) => {
-	const repoLink = await api.getRepo().url;
+	const repoLink = (await api.getRepo()).url;
 	return `${repoLink}/tree/${branch}`;
 };
 
