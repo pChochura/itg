@@ -6,14 +6,12 @@ const mutation = async (mutation) => {
 };
 
 const query = async (query, isMutation) => {
-	const body = `{ "query": "${isMutation ? 'mutation' : ''} { ${query
-		.replace(/\n| +|\t+/g, ' ')
-		.replace(/"/g, '\\"')} }" }`;
-	console.log(body);
 	const res = await f(`${utils.API_URL}/graphql`, {
 		method: 'POST',
 		headers: await utils.getAuthHeaders(),
-		body,
+		body: `{ "query": "${isMutation ? 'mutation' : ''} { ${query
+			.replace(/\n| +|\t+/g, ' ')
+			.replace(/"/g, '\\"')} }" }`,
 	});
 	return await res.json();
 };

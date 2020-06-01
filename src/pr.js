@@ -220,7 +220,11 @@ const runCommands = async (options) => {
 	const user = await api.getUser();
 
 	// Setting labels to the PR
-	pullRequest = await api.updatePullRequest(pullRequest.id, issue.labels, user.id);
+	pullRequest = await api.updatePullRequest(
+		pullRequest.id,
+		issue.labels,
+		user.id,
+	);
 	if (!pullRequest) {
 		sh.echo(
 			`We ecountered some problems with setting labels and assignee for this Pull Request`,
