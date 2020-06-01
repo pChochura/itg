@@ -10,7 +10,7 @@ const query = async (query, isMutation) => {
 		method: 'POST',
 		headers: await utils.getAuthHeaders(),
 		body: `{ "query": "${isMutation ? 'mutation' : ''} { ${query
-			.replace(/\n| +/g, ' ')
+			.replace(/\n| +|\t+/g, ' ')
 			.replace(/"/g, '\\"')} }" }`,
 	});
 	return await res.json();
