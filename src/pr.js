@@ -217,11 +217,13 @@ const runCommands = async (options) => {
 		sh.exit(1);
 	}
 
+	const user = await api.getUser();
+
 	// Setting labels to the PR
-	pullRequest = await api.updatePullRequest(pullRequest.id, issue.labels);
+	pullRequest = await api.updatePullRequest(pullRequest.id, issue.labels, user.id);
 	if (!pullRequest) {
 		sh.echo(
-			`We ecountered some problems with setting labels for this Pull Request`,
+			`We ecountered some problems with setting labels and assignee for this Pull Request`,
 		);
 		sh.exit(1);
 	}

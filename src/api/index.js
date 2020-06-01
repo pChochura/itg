@@ -119,7 +119,7 @@ const methods = {
 		const issue = await graphql.mutation(`updateIssue(input: {
       id: "${id}"${body ? `, body: "${body}"` : ''}${
 			assignee ? `, assigneeIds: "${assignee}"` : ''
-		}, state: "OPEN"
+		}, state: OPEN
     }) { issue { id url number } }`);
 		return issue.fromPath('data', 'updateIssue', 'issue');
 	},
@@ -152,13 +152,14 @@ const methods = {
 		return pr.fromPath('data', 'createPullRequest', 'pullRequest');
 	},
 
-	updatePullRequest: async (id, labels) => {
+	updatePullRequest: async (id, labels, assignee) => {
 		const labelsIds = [];
 		await labels.asyncForEach(async (label) => {
 			labelsIds.push((await methods.getLabel(label.name)).id);
 		});
 		const pr = await graphql.mutation(`updatePullRequest(input: {
-      pullRequestId: "${id}", labelIds: "${labelsIds.join(',')}"
+	  pullRequestId: "${id}", labelIds: "${labelsIds.join(',')}",
+	  assigneeIds: "${assignee}"
     }) { pullRequest { id number url } }`);
 		return pr.fromPath('data', 'updatePullRequest', 'pullRequest');
 	},
