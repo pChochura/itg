@@ -13,10 +13,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Pawelek99/itg.git"
-  },
+  "repository": "git://github.com/Pawelek99/itg.git",
   "keywords": [
     "issue-tracker",
     "github",
