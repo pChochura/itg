@@ -10,6 +10,9 @@
     "test": "jest",
     "prepublishOnly": "npm run format:check && npm run test && node saveInfo.js"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Pawelek99/itg.git"
